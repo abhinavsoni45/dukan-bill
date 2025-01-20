@@ -1,0 +1,54 @@
+// import { gql, useMutation } from "@apollo/client";
+// import { Invoice } from "../models/Invoice";
+
+// interface Item {
+//   hsnCode: string;
+//   products: string;
+//   grossWt: number;
+//   netWt: number;
+//   ratePerUnit: number;
+//   amountRs: number;
+// }
+// interface InvoiceInput {
+//   invoiceInput: {
+//     number: number;
+//     customerName: string;
+//     date: string;
+//     AllItems: Item[];
+//     taxableValue: number;
+//     cgst: number;
+//     sgst: number;
+//     invoiceTotal: number;
+//     chequeNo: string;
+//     bankName: string;
+//   };
+// }
+// const CREATE_INVOICE = gql`
+//   mutation CreateInvoice($invoiceInput: InvoiceInput!) {
+//     createInvoice(invoiceInput: $invoiceInput) {
+//       number
+//       date
+//       customerName
+//       AllItems {
+//         amount
+//         grossWt
+//         hsnCode
+//         netWt
+//         products
+//         ratePerUnit
+//       }
+//       taxableValue
+//       cgst
+//       sgst
+//       invoiceTotal
+//       chequeNo
+//       bankName
+//     }
+//   }
+// `;
+
+// const useCreateInvoice = () => {
+//   return useMutation<Invoice, InvoiceInput>(CREATE_INVOICE);
+// };
+
+// export { useCreateInvoice };

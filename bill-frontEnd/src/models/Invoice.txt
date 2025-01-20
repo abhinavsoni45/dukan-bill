@@ -1,0 +1,23 @@
+import { AbstractModel } from "./AbstractModel";
+
+export interface Invoice extends AbstractModel {
+  number: number;
+  customerName: string;
+  date: string;
+  AllItems: Item[];
+  taxableValue: number;
+  cgst: number;
+  sgst: number;
+  invoiceTotal: number;
+  chequeNo: string;
+  bankName: string;
+}
+
+interface Item {
+  hsnCode: string;
+  products: string;
+  grossWt: number;
+  netWt: number;
+  ratePerUnit: number;
+  amountRs: number;
+}
