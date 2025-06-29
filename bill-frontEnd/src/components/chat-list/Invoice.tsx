@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/jsx-no-comment-textnodes */
+import React, { useRef } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import * as Yup from "yup";
@@ -16,9 +17,10 @@ import {
   InputAdornment,
   Switch,
 } from "@mui/material";
+import { useReactToPrint } from "react-to-print";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CustomTextField } from "../../elements/UI";
-import { Add } from "@mui/icons-material";
+import { Add, ContentCopy, Print } from "@mui/icons-material";
 import { useCreateBill } from "../../hooks/useCreateBill";
 import { useUpdateBill } from "../../hooks/useUpdateBill";
 
@@ -48,6 +50,97 @@ const validationSchema = Yup.object({
   //   })
   // ),
 });
+
+export const PrintableInvoice = React.forwardRef(
+  ({ bill }: { bill: any }, ref: React.Ref<HTMLDivElement>) => (
+    <div
+      ref={ref}
+      style={{ padding: 24, backgroundColor: "#fff", color: "#000" }}
+    >
+      <div className="header-container">
+        <table className="header-table">
+          <tbody>
+            <tr>
+              <td className="header-logo">
+                <img src={bill?.company?.logo} alt="Company Logo" />
+              </td>
+              <td className="header-details">
+                <h2>{bill?.company?.name}</h2>
+                <p>{bill?.company?.address}</p>
+                <p>{bill?.company?.phone}</p>
+                <p>{bill?.company?.email}</p>
+              </td>
+            </tr>
+            <tr>
+              <td colSpan={3}>
+                <b>Name: </b> {bill?.customer?.name || "N/A"}
+                <br />
+                <b>Phone: </b> {bill?.customer?.phone || "N/A"}
+                <br />
+                <b>Address: </b> {bill?.customer?.address || "N/A"}
+                <br />
+                <b>Bill No: </b> {bill?.billNo || "N/A"}
+                <br />
+                <b>PAN No: </b> {bill?.customer?.panNo || "N/A"}
+                <br />
+              </td>
+              <td colSpan={2}>
+                <div className="bold center">Original</div>
+                <br />
+                <b>Invoice No:</b> {bill?.number}
+                <br />
+                <b>Invoice Date:</b> {bill?.date}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Sr. No.</th>
+            <th>
+              Description
+              <br />
+              HUID:
+            </th>
+            <th>HSN Code</th>
+            <th>PCS</th>
+            <th>Gross Wt.</th>
+            <th>Net Wt.</th>
+            <th>Rate</th>
+            <th>Labour</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bill?.AllItems?.map((item: any, idx: number) => (
+            <tr key={idx}>
+              <td>{idx + 1}</td>
+              <td>{item?.products}</td>
+              <td>{item?.hsnCode}</td>
+              <td>1</td>
+              <td>{item?.grossWt}</td>
+              <td>{item?.netWt}</td>
+              <td>{item?.ratePerUnit}</td>
+              <td>-</td>
+              <td>{item?.amountRs}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {/* ...rest of your invoice HTML... */}
+      <table>
+        <tbody>
+          <tr>
+            <td className="bold">Total Amount:</td>
+            <td>{bill?.invoiceTotal}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+);
 
 const CustomTextFieldDelete = ({ label, name, onDelete, ...props }: any) => {
   return (
@@ -89,6 +182,33 @@ const CustomTextFieldDelete = ({ label, name, onDelete, ...props }: any) => {
 };
 
 const InvoiceForm = ({ handleClose, bill, onThemeToggle }: any) => {
+  const printRef = useRef<HTMLDivElement>(null);
+  // const handlePrint = useReactToPrint({
+  // content: () => printRef.current, // ✅ this is now valid
+  // documentTitle: `Invoice_${bill?.number || "New"}`,
+  // });
+  // const handlePrint = () => {
+  //   console.log("Printing invoice...");
+  //   if (printRef.current) {
+  //     useReactToPrint({
+  //       content: () => printRef.current,
+  //       documentTitle: `Invoice_${bill?.number || "New"}`,
+  //     })();
+  //     console.log("Print function called successfully.");
+  //   } else {
+  //     console.error("Print reference is not set.");
+  //   }
+  // };
+
+  // const contentRef = useRef<HTMLDivElement>(null);
+
+  console.log("Bill in InvoiceForm:", bill);
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `My_HeaderText_Print_${bill?.number || "New"}`,
+    onAfterPrint: () => console.log("Printing completed"),
+  });
+
   const [createBill] = useCreateBill();
   const [updateBill] = useUpdateBill();
   return (
@@ -102,7 +222,18 @@ const InvoiceForm = ({ handleClose, bill, onThemeToggle }: any) => {
           State: Karnataka Code: 29
         </Typography>
       </Box>
-
+      {bill && (
+        <Button
+          // variant="outlined"d
+          onClick={handlePrint}
+          // style={{ marginBottom: 16 }}
+        >
+          <Print />
+        </Button>
+      )}
+      <div style={{ display: "none" }}>
+        <PrintableInvoice ref={printRef} bill={bill} />
+      </div>
       <Formik
         initialValues={{
           number: bill?.number || "",
@@ -149,38 +280,39 @@ const InvoiceForm = ({ handleClose, bill, onThemeToggle }: any) => {
             })),
             // userId: "66cc41fc32ed9bda77940446",
           };
+          console.log(formattedValues, "Formatted Values");
           const cleanInput = (input: any) => {
             const { __typename, userId, ...cleanedInput } = input;
             cleanedInput._id = bill._id;
             return cleanedInput;
           };
           try {
-            // let updateData;
-            // if (bill) {
-            //   updateData = { ...bill, ...formattedValues };
-            //   const sanitizedInput = cleanInput(updateData);
+            let updateData;
+            if (bill) {
+              updateData = { ...bill, ...formattedValues };
+              const sanitizedInput = cleanInput(updateData);
 
-            //   const data = await updateBill({
-            //     variables: { updateBillInput: sanitizedInput },
-            //   });
-            // } else {
-            //   const data = await createBill({
-            //     variables: { createBillInput: formattedValues },
-            //   });
-            // }
-            // console.log(formattedValues, "this is fomrat");
-            // console.log(updateData, "this is updatedDAta");
+              const data = await updateBill({
+                variables: { updateBillInput: sanitizedInput },
+              });
+            } else {
+              const data = await createBill({
+                variables: { createBillInput: formattedValues },
+              });
+            }
+            console.log(formattedValues, "this is fomrat");
+            console.log(updateData, "this is updatedDAta");
 
             // const datasave = updateData ? createBillInput()
             // const operation = bill ? updateBill : createBill;
-            // // Properly format the variables for the mutation
+            // Properly format the variables for the mutation
             // const variables = bill
-            //   ? { updateBillInput: updateData } // For update
-            //   : { createBillInput: updateData }; // For create
+            // ? { updateBillInput: updateData } // For update
+            // : { createBillInput: updateData }; // For create
 
             // console.log(operation);
 
-            // // Pass the correctly structured variables to the operation
+            // Pass the correctly structured variables to the operation
             // await operation({ variables });
 
             handleClose();
@@ -188,7 +320,8 @@ const InvoiceForm = ({ handleClose, bill, onThemeToggle }: any) => {
             //   variables: { createBillInput: formattedValues },
             // });
 
-            handleClose();
+            // handleClose();
+
             console.log("Bill created successfully:");
           } catch (error) {
             // Handle error, e.g., show error message

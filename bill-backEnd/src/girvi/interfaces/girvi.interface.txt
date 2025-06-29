@@ -1,0 +1,17 @@
+// src/girvi/interfaces/girvi.interface.ts
+import { Document } from 'mongoose';
+
+/**
+ * @interface Girvi
+ * @description Defines the structure for a single record to be stored in MongoDB,
+ * representing a row from the Excel sheet.
+ * Adjust properties based on your Excel column headers.
+ */
+export interface Girvi extends Document {
+  // Example fields - you should define these based on your Excel column names
+  // For instance, if your Excel has columns 'Name', 'Age', 'City', you'd define:
+  // name: string;
+  // age: number;
+  // city: string;
+  [key: string]: any; // Allow any string key with any value type for flexible Excel data
+}

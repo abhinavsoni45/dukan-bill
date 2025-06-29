@@ -10,6 +10,8 @@ import { UsersModule } from './users/users.module';
 // import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
 import { BillsModule } from './bills/bills.module';
+import { ExcelImporterModule } from './excel-importer/excel-importer.module';
+import { GirviModule } from './girvi/girvi.module';
 
 @Module({
   imports: [
@@ -19,9 +21,11 @@ import { BillsModule } from './bills/bills.module';
         MONGODB_URI: Joi.string().required(),
       }),
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    // GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      uploads: true,
     }),
     DatabaseModule,
     UsersModule,
@@ -47,6 +51,8 @@ import { BillsModule } from './bills/bills.module';
     // }),
     AuthModule,
     BillsModule,
+    GirviModule,
+    // ExcelImporterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

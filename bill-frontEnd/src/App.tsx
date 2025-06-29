@@ -27,6 +27,7 @@ import InvoiceForm from "./components/chat-list/Invoice";
 import { LightMode } from "@mui/icons-material";
 import { FilterList } from "./components/girvi/FilterList";
 import { GirviList } from "./components/girvi/GirviList";
+import { SearchProvider } from "./components/context/SearchContext";
 
 const darkTheme = createTheme({
   palette: {
@@ -95,15 +96,17 @@ const App = () => {
               </Grid>
             </Grid>
           ) : showGirviList ? (
-            <Grid container>
-              <Grid item md={3}>
-                <FilterList />
+            <SearchProvider>
+              <Grid container>
+                <Grid item md={3}>
+                  <FilterList />
+                </Grid>
+                <Grid item md={9}>
+                  <GirviList />
+                  {/* <h1>Hello worlds</h1> */}
+                </Grid>
               </Grid>
-              <Grid item md={9}>
-                <GirviList />
-                {/* <h1>Hello worlds</h1> */}
-              </Grid>
-            </Grid>
+            </SearchProvider>
           ) : (
             // <div>
             //   <h1>Hello World</h1>

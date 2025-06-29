@@ -5,10 +5,29 @@ import { TopBar } from "./TopBar";
 import { Add, AddCircle } from "@mui/icons-material";
 import GirviForm from "./GirviForm";
 import { useState } from "react";
+import { useGetGirvis } from "../../hooks/useGetGirvis";
+import { useSearch } from "../context/SearchContext";
 
 export const GirviList = () => {
   const [open, setOpen] = useState(false);
+  const { data, loading, error } = useGetGirvis();
+  const [getGirviList, setGirviList] = useState([]);
+  const { searchTerm } = useSearch();
 
+  const filteredData = {
+    ...data,
+    girvis:
+      data?.girvis?.filter((girvi: any) => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          girvi.NameAddress?.toLowerCase().includes(searchLower) ||
+          girvi.number?.toString().includes(searchLower) ||
+          girvi.phno?.toString().includes(searchLower) ||
+          girvi.date?.toLowerCase().includes(searchLower)
+        );
+      }) || [],
+  };
+  console.log(loading, error, data, "girvidata", data?.girvis);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -24,11 +43,7 @@ export const GirviList = () => {
             gap: "4px",
           }}
         >
-          <OutlinedCard />
-          <OutlinedCard />
-          <OutlinedCard />
-          <OutlinedCard />
-          <OutlinedCard />
+          <OutlinedCard girivs={filteredData?.girvis} />
         </div>
         <IconButton
           size="large"

@@ -8,6 +8,8 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import { useSearch } from "../context/SearchContext";
+import { FileUpload } from "./FileUpload";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -52,6 +54,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAppBar() {
+  const { searchTerm, setSearchTerm } = useSearch();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -63,8 +66,11 @@ export default function SearchAppBar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Search>
+          <FileUpload></FileUpload>
         </Toolbar>
       </AppBar>
     </Box>
