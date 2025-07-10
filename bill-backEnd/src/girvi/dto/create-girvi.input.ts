@@ -10,17 +10,17 @@ import { Type } from 'class-transformer';
 
 @InputType()
 export class CreateGitemInput {
-  @Field(() => Float)
-  @IsNumber()
-  principal: number;
+  // @Field(() => Float)
+  // @IsNumber()
+  // principal: number;
 
   @Field()
   @IsString()
   amtLoan: string;
 
-  @Field()
-  @IsString()
-  No: string;
+  // @Field({ nullable: true })
+  // @IsString()
+  // No: string;
 
   @Field()
   @IsString()
@@ -54,17 +54,21 @@ export class CreateGirviInput {
   @IsString()
   date: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field()
+  @IsString()
+  endDate: string;
+
+  @Field(() => Float, { nullable: true })
   @IsNumber()
   @IsOptional()
   phno?: number;
 
-  @Field(() => Int)
+  @Field(() => Float, { nullable: true })
   @IsNumber()
-  intDue: boolean;
+  intDue?: boolean;
 
-  @Field(() => Int)
-  TotalAmt: number;
+  @Field(() => Float, { nullable: true })
+  TotalAmt?: number;
 
   @Field(() => [CreateGitemInput])
   @IsArray()

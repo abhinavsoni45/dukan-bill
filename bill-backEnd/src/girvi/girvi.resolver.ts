@@ -1,13 +1,15 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { GirviService } from './girvi.service';
+// import { GirviService } from './girvi.service';
 import { Girvi } from './entities/girvi.entity';
-import { CreateGirviInput } from './dto/create-girvi.input';
 import { UpdateGirviInput } from './dto/update-girvi.input';
 import { UseGuards } from '@nestjs/common';
 // import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { TokenPayload } from 'src/auth/token-payload.interface';
+import { GirviService } from './girvi.service';
+import { CreateGirviInput } from './dto/create-girvi.input';
+import { GirviFilterQuery } from './dto/girvi-query.input';
 
 @Resolver(() => Girvi)
 export class GirviResolver {
@@ -23,8 +25,10 @@ export class GirviResolver {
   }
 
   @Query(() => [Girvi], { name: 'girvis' })
-  findAll() {
-    return this.girviService.findAll();
+  findAll(
+    @Args('girviFilterQuery', { nullable: true }) girviFilterQuery?: GirviFilterQuery,
+  ) {
+    return this.girviService.findAll(girviFilterQuery);
   }
 
   @Query(() => Girvi, { name: 'girvi' })
@@ -59,6 +63,6 @@ export class GirviResolver {
   //   @Args({ name: 'file', type: () => GraphQLUpload }) file: FileUpload,
   //   @CurrentUser() user: TokenPayload,
   // ) {
-  //   return this.girviService.handleExcelUpload(file, user._id);
+  //   return this.girviService.saveExcelToTemp(file, user._id);
   // }
 }

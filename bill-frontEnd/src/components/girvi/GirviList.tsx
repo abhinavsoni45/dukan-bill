@@ -1,4 +1,4 @@
-import { Box, Card, IconButton, Modal } from "@mui/material";
+import { Box, Card, IconButton, Modal, Pagination } from "@mui/material";
 import OutlinedCard from "./Card";
 import { Canvas } from "../../elements/UI";
 import { TopBar } from "./TopBar";
@@ -8,9 +8,16 @@ import { useState } from "react";
 import { useGetGirvis } from "../../hooks/useGetGirvis";
 import { useSearch } from "../context/SearchContext";
 
-export const GirviList = () => {
+export const GirviList = ({ filter, sort }: any) => {
   const [open, setOpen] = useState(false);
-  const { data, loading, error } = useGetGirvis();
+  const { data, loading, error } = useGetGirvis({
+    filter: {
+      status: filter,
+    },
+    sort: {
+      sortBy: sort,
+    },
+  });
   const [getGirviList, setGirviList] = useState([]);
   const { searchTerm } = useSearch();
 
@@ -20,14 +27,14 @@ export const GirviList = () => {
       data?.girvis?.filter((girvi: any) => {
         const searchLower = searchTerm.toLowerCase();
         return (
-          girvi.NameAddress?.toLowerCase().includes(searchLower) ||
-          girvi.number?.toString().includes(searchLower) ||
-          girvi.phno?.toString().includes(searchLower) ||
-          girvi.date?.toLowerCase().includes(searchLower)
+          girvi?.NameAddress?.toLowerCase().includes(searchLower) ||
+          // girvi?.number?.toString().includes(searchLower) ||
+          // girvi?.phno?.toString().includes(searchLower) ||
+          girvi?.date?.toLowerCase().includes(searchLower)
         );
       }) || [],
   };
-  console.log(loading, error, data, "girvidata", data?.girvis);
+  console.log(loading, error, data, "girvidata", data?.girvis, filteredData);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -35,6 +42,7 @@ export const GirviList = () => {
     <>
       <div style={{ height: "92vh" }}>
         <TopBar />
+        <Pagination count={4} />
         <div
           style={{
             display: "grid",
@@ -43,7 +51,7 @@ export const GirviList = () => {
             gap: "4px",
           }}
         >
-          <OutlinedCard girivs={filteredData?.girvis} />
+          <OutlinedCard girvis={filteredData} />
         </div>
         <IconButton
           size="large"

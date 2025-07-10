@@ -12,9 +12,7 @@ const updateGirviDocument = gql(`
     phno
     intDue
     GirviItems {
-      principal
       amtLoan
-      No
       FullDescription
       grossWt
       gms
@@ -23,6 +21,28 @@ const updateGirviDocument = gql(`
     }
   }
 `);
+// const updateGirviDocument = gql(`
+//   mutation UpdateGirvi($updateGirviInput: UpdateGirviInput!) {
+//     updateGirvi(updateGirviInput: $updateGirviInput) {
+//      _id
+//     userId
+//     number
+//     NameAddress
+//     date
+//     phno
+//     intDue
+//     GirviItems {
+//       principal
+//       amtLoan
+//       No
+//       FullDescription
+//       grossWt
+//       gms
+//       Value
+//     }
+//     }
+//   }
+// `);
 
 const useUpdateGirvi = () => {
   return useMutation(updateGirviDocument);

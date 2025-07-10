@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AbstractEntity } from 'src/common/database/abstract.entity';
 import { GirviItem, GirviItemSchema } from './girviItem.entity';
@@ -12,29 +12,37 @@ export class Girvi extends AbstractEntity {
   @Prop()
   userId: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @Prop()
   number: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   NameAddress: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   date: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Float, { nullable: true })
   @Prop()
   phno?: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
-  intDue: boolean;
+  intDue?: boolean;
 
-  @Field(() => [GirviItem])
+  @Field(() => [GirviItem], { nullable: true })
   @Prop({ type: [GirviItemSchema] })
   GirviItems: GirviItem[];
+
+  @Field({ nullable: true })
+  @Prop()
+  endDate?: string;
+
+  @Field({ nullable: true })
+  @Prop()
+  viyaj?: string;
 }
 
 export const GirviSchema = SchemaFactory.createForClass(Girvi);

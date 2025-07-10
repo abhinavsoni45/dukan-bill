@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AbstractEntity } from 'src/common/database/abstract.entity';
 
@@ -13,19 +13,19 @@ export class Item {
   @Prop()
   products: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @Prop()
   grossWt: number;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @Prop()
   netWt: number;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @Prop()
   ratePerUnit: number;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @Prop()
   amountRs: number;
 }
@@ -51,19 +51,19 @@ export class Bill extends AbstractEntity {
   @Prop()
   date: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @Prop()
   taxableValue: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Float, { nullable: true })
   @Prop()
   cgst?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Float, { nullable: true })
   @Prop()
   sgst?: number;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @Prop()
   invoiceTotal: number;
 

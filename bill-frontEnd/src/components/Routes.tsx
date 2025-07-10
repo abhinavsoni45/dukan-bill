@@ -16,6 +16,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
   },
+  // {
+  //   path: "/upload",
+  //   element: <FileUpload />,
+  // },
 ]);
 
 export default router;

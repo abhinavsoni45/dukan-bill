@@ -1,26 +1,22 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 @ObjectType('GirviItem')
 export class GirviItem {
-  @Field(() => Int)
-  @Prop()
-  principal: number;
-
   @Field()
   @Prop()
   amtLoan: string;
 
   @Field()
   @Prop()
-  No: string;
+  No?: string;
 
   @Field()
   @Prop()
   FullDescription: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @Prop()
   grossWt: number;
 

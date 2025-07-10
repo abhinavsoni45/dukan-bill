@@ -2,9 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { CreateGirviInput } from './dto/create-girvi.input';
 import { UpdateGirviInput } from './dto/update-girvi.input';
 import { GirviRepository } from './girvi.repository';
-// import { FileUpload } from 'graphql-upload/Upload.mjs';
-import { join } from 'path';
-import { createReadStream } from 'fs';
+import * as XLSX from 'xlsx';
+// import { ExcelProcessorService } from '../excel-processor/excel-processor.service';
+import { join, dirname } from 'path';
+import {
+  createReadStream,
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+} from 'fs';
+import { GirviItem } from './entities/girviItem.entity';
+import { GirviFilterQuery } from './dto/girvi-query.input';
 
 @Injectable()
 export class GirviService {
@@ -17,8 +26,33 @@ export class GirviService {
     });
   }
 
-  async findAll() {
-    return this.girviRepository.find({});
+  async findAll(girviFilterQuery?: GirviFilterQuery) {
+    const filter = {};
+    if (girviFilterQuery?.filter?.status === 'blue') {
+      filter['endDate'] = { $ne: null };
+    } else if (girviFilterQuery?.filter?.status === 'yellow') {
+      filter['endDate'] = null;
+    } else if (girviFilterQuery?.filter?.status === 'all') {
+      // No filter needed when 'all' is selected
+    }
+
+    const sort = {};
+    if (girviFilterQuery?.sort?.sortBy === 'amtLoan') {
+      const girvis = await this.girviRepository.find(filter);
+      return girvis.sort((a, b) => {
+        const aMaxLoan = Math.max(
+          ...a.GirviItems.map((item) => Number(item.amtLoan)),
+        );
+        const bMaxLoan = Math.max(
+          ...b.GirviItems.map((item) => Number(item.amtLoan)),
+        );
+        return bMaxLoan - aMaxLoan;
+      });
+    } else {
+      sort['number'] = 1;
+    }
+
+    return this.girviRepository.find(filter, { sort });
   }
 
   async findOne(_id: string) {
@@ -36,15 +70,118 @@ export class GirviService {
     return this.girviRepository.findOneAndDelete({ _id });
   }
 
-  // async handleExcelUpload(file: FileUpload, userId: string): Promise<boolean> {
-  //   const { createReadStream, filename } = file;
-  //   const tempPath = join(__dirname, '../../temp', filename);
-  //   await new Promise((resolve, reject) => {
-  //     createReadStream()
-  //       .pipe(createReadStream(tempPath))
-  //       .on('finish', resolve)
-  //       .on('error', reject);
-  //   });
-  //   return true;
-  // }
+  async saveExcelToTemp(
+    // file: Express.Multer.File,
+    buffer: any,
+    userId: string,
+  ): Promise<boolean> {
+    // console.log(
+    //   'Received file in saveExcelToTemp:',
+    //   file,
+    //   typeof file,
+    //   file.buffer,
+    // );
+    // const tempPath = join(
+    //   __dirname,
+    //   '../../temp',
+    //   `${Date.now()}-${file.originalname}`,
+    // );
+    // await new Promise<void>((resolve, reject) => {
+    //   createWriteStream(tempPath).write(file.buffer, (error) => {
+    //     if (error) {
+    //       reject(error);
+    //     } else {
+    //       resolve();
+    //     }
+    //   });
+    // });
+    // return true;
+    const tempDir = join(__dirname, '../../temp');
+    if (!existsSync(tempDir)) {
+      mkdirSync(tempDir, { recursive: true });
+    }
+    const tempPath = join(tempDir, `${Date.now()}-upload.xlsx`);
+    await new Promise<void>((resolve, reject) => {
+      createWriteStream(tempPath).write(buffer, (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+    await this.addExcelProcessingJob(tempPath, userId);
+    return true;
+  }
+
+  async addExcelProcessingJob(filePath: string, userId: string) {
+    // Directly call handleParseExcel instead of adding to queue
+    await this.handleParseExcel(filePath, userId);
+  }
+
+  // @Process('parse-excel') // Commented out BullMQ Process decorator
+  async handleParseExcel(filePath: string, userId: string) {
+    // Modified to accept filePath and userId directly
+    console.log(`Processing Excel file: ${filePath} for user: ${userId}`);
+    console.log(`Processing Excel file: ${filePath} for user: ${userId}`);
+
+    // Helper to convert Excel serial date to DD--MM--YYYY string
+    function excelDateToJSDate(serial: number): string {
+      const utc_days = Math.floor(serial - 25569);
+      const utc_value = utc_days * 86400;
+      const date_info = new Date(utc_value * 1000);
+      const day = String(date_info.getUTCDate()).padStart(2, '0');
+      const month = String(date_info.getUTCMonth() + 1).padStart(2, '0');
+      const year = date_info.getUTCFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
+    try {
+      const workbook = XLSX.read(readFileSync(filePath), { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const excelRows = XLSX.utils.sheet_to_json(worksheet);
+
+      const girviEntities: CreateGirviInput[] = [];
+
+      for (const row of excelRows) {
+        // Convert Excel serial date to string if needed
+        let startDate = row['start date'];
+        if (typeof startDate === 'number') {
+          startDate = excelDateToJSDate(startDate);
+        }
+        let endDate = row['end date'];
+        if (typeof endDate === 'number') {
+          endDate = excelDateToJSDate(endDate);
+        }
+        const girviItem: GirviItem = {
+          amtLoan: row['amount_loan'],
+          FullDescription: row['item'],
+          grossWt: row['gross weight'],
+          Value: row['value'],
+        };
+
+        const girviInput: CreateGirviInput = {
+          // userId: userId,
+          number: row['itemno'],
+          NameAddress: row['name'],
+          date: startDate,
+          endDate: endDate,
+          GirviItems: [girviItem],
+        };
+        girviEntities.push(girviInput);
+      }
+
+      for (const girviInput of girviEntities) {
+        await this.create(girviInput, userId);
+      }
+
+      console.log(
+        `Successfully processed and saved ${girviEntities.length} Girvi entities.`,
+      );
+    } catch (error) {
+      console.error(`Failed to process Excel file ${filePath}:`, error);
+      throw error;
+    }
+  }
 }

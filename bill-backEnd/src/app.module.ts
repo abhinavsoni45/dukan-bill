@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -7,10 +8,9 @@ import { DatabaseModule } from './common/database/database.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './users/users.module';
-// import { LoggerModule } from 'nestjs-pino';
+import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
 import { BillsModule } from './bills/bills.module';
-import { ExcelImporterModule } from './excel-importer/excel-importer.module';
 import { GirviModule } from './girvi/girvi.module';
 
 @Module({
@@ -25,34 +25,38 @@ import { GirviModule } from './girvi/girvi.module';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      uploads: true,
     }),
     DatabaseModule,
     UsersModule,
-    // LoggerModule.forRootAsync({
-    //   useFactory: (configService: ConfigService) => {
-    //     const isProduction = configService.get('NODE_ENV') === 'production';
+    LoggerModule.forRootAsync({
+      useFactory: (configService: ConfigService) => {
+        const isProduction = configService.get('NODE_ENV') === 'production';
 
-    //     return {
-    //       pinoHttp: {
-    //         transport: isProduction
-    //           ? undefined
-    //           : {
-    //               target: 'pino-pretty',
-    //               options: {
-    //                 singleLine: true,
-    //               },
-    //             },
-    //         level: isProduction ? 'info' : 'debug',
-    //       },
-    //     };
-    //   },
-    //   inject: [ConfigService],
-    // }),
+        return {
+          pinoHttp: {
+            transport: isProduction
+              ? undefined
+              : {
+                  target: 'pino-pretty',
+                  options: {
+                    singleLine: true,
+                  },
+                },
+            level: isProduction ? 'info' : 'debug',
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
     AuthModule,
     BillsModule,
     GirviModule,
-    // ExcelImporterModule,
+    // BullModule.forRoot({
+    //   redis: {
+    //     host: 'localhost',
+    //     port: 6379,
+    //   },
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],

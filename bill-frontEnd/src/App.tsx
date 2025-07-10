@@ -44,6 +44,8 @@ const App = () => {
   const { path } = usePath();
 
   const [isLightTheme, setIsLightTheme] = useState(false);
+  const [filter, setFilter] = useState('all');
+  const [sort, setSort] = useState('number');
 
   const handleThemeChange = () => {
     setIsLightTheme((prevTheme: Boolean) => !prevTheme);
@@ -99,10 +101,10 @@ const App = () => {
             <SearchProvider>
               <Grid container>
                 <Grid item md={3}>
-                  <FilterList />
+                  <FilterList filter={filter} setFilter={setFilter} sort={sort} setSort={setSort} />
                 </Grid>
                 <Grid item md={9}>
-                  <GirviList />
+                  <GirviList filter={filter} sort={sort} />
                   {/* <h1>Hello worlds</h1> */}
                 </Grid>
               </Grid>

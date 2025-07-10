@@ -10,21 +10,21 @@ const createGirviDocument = graphql(`
   }
 `);
 
-const useCreateGirvi = () => {
-  return useMutation(createGirviDocument, {
-    update(cache, { data }) {
-      cache.modify({
-        fields: {
-          girvis(existingGirvis = []) {
-            const newGirviRef = cache.writeFragment({
-              data: data?.createGirvi,
-              fragment: GirviFragment,
-            });
-            return [...existingGirvis, newGirviRef];
-          },
-        },
-      });
-    },
-  });
-};
-export { useCreateGirvi };
+// const useCreateGirvi = () => {
+//   return useMutation(createGirviDocument, {
+//     update(cache, { data }) {
+//       cache.modify({
+//         fields: {
+//           girvis(existingGirvis = []) {
+//             const newGirviRef = cache.writeFragment({
+//               data: data?.createGirvi,
+//               fragment: GirviFragment,
+//             });
+//             return [...existingGirvis, newGirviRef];
+//           },
+//         },
+//       });
+//     },
+//   });
+// };
+// export { useCreateGirvi };
