@@ -46,6 +46,10 @@ export class CreateGirviInput {
   @IsNumber()
   number: number;
 
+  @Field(() => Int)
+  @IsNumber()
+  series: number;
+
   @Field()
   @IsString()
   NameAddress: string;

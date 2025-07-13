@@ -59,6 +59,10 @@ export class GirviService {
     return this.girviRepository.findOne({ _id });
   }
 
+  async findBySeries(series: number) {
+    return this.girviRepository.find({ series });
+  }
+
   async update(_id: string, updateGirviInput: UpdateGirviInput) {
     return await this.girviRepository.findOneAndUpdate(
       { _id },
@@ -136,6 +140,14 @@ export class GirviService {
       return `${day}/${month}/${year}`;
     }
 
+    function calculateSeries(number: number): number {
+      if (number < 1000 || number > 9999) {
+        throw new Error('Number must be a 4-digit number.');
+      }
+      const series = Math.floor((number - 1) / 100);
+      return series;
+    }
+
     try {
       const workbook = XLSX.read(readFileSync(filePath), { type: 'buffer' });
       const sheetName = workbook.SheetNames[0];
@@ -168,6 +180,7 @@ export class GirviService {
           date: startDate,
           endDate: endDate,
           GirviItems: [girviItem],
+          series: calculateSeries(row['itemno']),
         };
         girviEntities.push(girviInput);
       }

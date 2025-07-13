@@ -16,6 +16,10 @@ export class Girvi extends AbstractEntity {
   @Prop()
   number: number;
 
+  @Field(() => Int, { nullable: true })
+  @Prop()
+  series: number;
+
   @Field({ nullable: true })
   @Prop()
   NameAddress: string;
