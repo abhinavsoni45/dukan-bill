@@ -11,7 +11,6 @@ import router from "./components/Routes";
 import { ApolloProvider } from "@apollo/client";
 import client from "./constants/apollo-client";
 import Guard from "./components/auth/Guard";
-import Header from "./components/header/Header";
 import Snackbar from "./components/snackbar/Snackbar";
 import ChatList from "./components/chat-list/ChatList";
 import { usePath } from "./hooks/usePath";
@@ -28,6 +27,8 @@ import { LightMode } from "@mui/icons-material";
 import { FilterList } from "./components/girvi/FilterList";
 import { GirviList } from "./components/girvi/GirviList";
 import { SearchProvider } from "./components/context/SearchContext";
+import Header from "./components/header/Header";
+import { useFindRange } from "./resolvers/girvi.resolvers";
 
 const darkTheme = createTheme({
   palette: {
@@ -44,8 +45,8 @@ const App = () => {
   const { path } = usePath();
 
   const [isLightTheme, setIsLightTheme] = useState(false);
-  const [filter, setFilter] = useState('all');
-  const [sort, setSort] = useState('number');
+  const [filter, setFilter] = useState("all");
+  const [sort, setSort] = useState("number");
 
   const handleThemeChange = () => {
     setIsLightTheme((prevTheme: Boolean) => !prevTheme);
@@ -82,7 +83,8 @@ const App = () => {
   // );
   return (
     <ApolloProvider client={client}>
-      <ThemeProvider theme={isLightTheme ? lightTheme : darkTheme}>
+      {/* <ThemeProvider theme={isLightTheme ? lightTheme : darkTheme}> */}
+      <ThemeProvider theme={isLightTheme ? lightTheme : lightTheme}>
         <CssBaseline />
         <Header />
         <Guard>
@@ -101,10 +103,19 @@ const App = () => {
             <SearchProvider>
               <Grid container>
                 <Grid item md={3}>
-                  <FilterList filter={filter} setFilter={setFilter} sort={sort} setSort={setSort} />
+                  <FilterList
+                    filter={filter}
+                    setFilter={setFilter}
+                    sort={sort}
+                    setSort={setSort}
+                  />
                 </Grid>
                 <Grid item md={9}>
-                  <GirviList filter={filter} sort={sort} />
+                  <GirviList
+                    filter={filter}
+                    sort={sort}
+                    // number={seriesData?.seriesRange}
+                  />
                   {/* <h1>Hello worlds</h1> */}
                 </Grid>
               </Grid>

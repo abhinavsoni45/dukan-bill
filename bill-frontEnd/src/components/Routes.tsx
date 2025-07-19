@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "./auth/Login";
 import Signup from "./auth/Signup";
 import Home from "./home/Home";
+import GirviBySeries from "./girvi/GirviBySeries";
+import { GirviList } from "./girvi/GirviList";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/girvi/:number",
+    element: <GirviBySeries />,
   },
   // {
   //   path: "/upload",

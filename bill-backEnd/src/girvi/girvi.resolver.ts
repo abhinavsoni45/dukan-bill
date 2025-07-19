@@ -10,6 +10,8 @@ import { TokenPayload } from 'src/auth/token-payload.interface';
 import { GirviService } from './girvi.service';
 import { CreateGirviInput } from './dto/create-girvi.input';
 import { GirviFilterQuery } from './dto/girvi-query.input';
+import { number } from 'joi';
+import { SeriesRange } from './entities/seriesRange.type';
 
 @Resolver(() => Girvi)
 export class GirviResolver {
@@ -26,9 +28,22 @@ export class GirviResolver {
 
   @Query(() => [Girvi], { name: 'girvis' })
   findAll(
-    @Args('girviFilterQuery', { nullable: true }) girviFilterQuery?: GirviFilterQuery,
+    @Args('girviFilterQuery', { nullable: true })
+    girviFilterQuery?: GirviFilterQuery,
   ) {
     return this.girviService.findAll(girviFilterQuery);
+  }
+
+  // @Query(() => Int, {
+  //   nullable: true,
+  //   name: 'findSeriesRange',
+  // })
+  // findSeriesRange() {
+  //   return this.girviService.findSeriesRange();
+  // }
+  @Query(() => SeriesRange, { name: 'seriesRange' })
+  findSeriesRange() {
+    return this.girviService.findSeriesRange();
   }
 
   @Query(() => Girvi, { name: 'girvi' })

@@ -1,4 +1,11 @@
-import { Box, Card, IconButton, Modal, Pagination } from "@mui/material";
+import {
+  Box,
+  Card,
+  IconButton,
+  Modal,
+  Pagination,
+  PaginationItem,
+} from "@mui/material";
 import OutlinedCard from "./Card";
 import { Canvas } from "../../elements/UI";
 import { TopBar } from "./TopBar";
@@ -7,8 +14,21 @@ import GirviForm from "./GirviForm";
 import { useState } from "react";
 import { useGetGirvis } from "../../hooks/useGetGirvis";
 import { useSearch } from "../context/SearchContext";
+import { useFindRange } from "../../resolvers/girvi.resolvers";
 
 export const GirviList = ({ filter, sort }: any) => {
+  const {
+    data: seriesData,
+    loading: seriesLoading,
+    error: seriesError,
+  } = useFindRange();
+  console.log(
+    seriesData,
+    "seriesData",
+    seriesLoading,
+    seriesError,
+    "seriesError"
+  );
   const [open, setOpen] = useState(false);
   const { data, loading, error } = useGetGirvis({
     filter: {
@@ -17,9 +37,21 @@ export const GirviList = ({ filter, sort }: any) => {
     sort: {
       sortBy: sort,
     },
+    number: seriesData?.seriesRange?.smallest,
   });
+
   const [getGirviList, setGirviList] = useState([]);
   const { searchTerm } = useSearch();
+
+  const [currentPage, setCurrentPage] = useState<number | null>(null);
+  const smallest = seriesData?.seriesRange?.smallest;
+  const largest = seriesData?.seriesRange?.largest;
+  const totalPages = largest - smallest + 1;
+
+  if (currentPage === null) {
+    setCurrentPage(smallest);
+    return null; // Prevent premature rendering
+  }
 
   const filteredData = {
     ...data,
@@ -42,7 +74,30 @@ export const GirviList = ({ filter, sort }: any) => {
     <>
       <div style={{ height: "92vh" }}>
         <TopBar />
-        <Pagination count={4} />
+        <Pagination
+          page={currentPage - smallest + 1} // MUI expects 1-based index
+          count={totalPages}
+          onChange={(event: any, pageIndex: any) => {
+            const actualPage = smallest + pageIndex - 1;
+            setCurrentPage(actualPage); // store real page number
+            console.log("Selected page:", actualPage);
+          }}
+          renderItem={(item: any) => (
+            <PaginationItem
+              {...item}
+              page={item.page ? smallest + item.page - 1 : item.page}
+            />
+          )}
+          // variant="outlined"
+          // shape="rounded"
+          style={{
+            margin: "10px 0",
+            display: "flex",
+            justifyContent: "center",
+          }}
+          color="primary"
+          size="large"
+        />
         <div
           style={{
             display: "grid",

@@ -13,10 +13,20 @@ export class SortGirvi {
 }
 
 @InputType()
+export class NumberGirvi {
+  @Field(() => Number, { nullable: true })
+  number?: number;
+}
+@InputType()
 export class GirviFilterQuery {
   @Field(() => FilterGirvi, { nullable: true })
   filter?: FilterGirvi;
 
   @Field(() => SortGirvi, { nullable: true })
   sort?: SortGirvi;
+
+  @Field(() => Number, {
+    nullable: true,
+  })
+  number?: number;
 }

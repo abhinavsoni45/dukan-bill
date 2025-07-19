@@ -6,6 +6,9 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
+import { Print } from "@mui/icons-material";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 
 const CardBody = ({ girvi, onClick }: { girvi: any; onClick: () => void }) => (
   <React.Fragment>
@@ -39,11 +42,43 @@ const CardBody = ({ girvi, onClick }: { girvi: any; onClick: () => void }) => (
   </React.Fragment>
 );
 
+export const PrintableGirviForm = React.forwardRef(
+  ({ Girvi }: { Girvi: any }, ref: React.Ref<HTMLDivElement>) => (
+    <div
+      ref={ref}
+      style={{ padding: 24, backgroundColor: "#fff", color: "#000" }}
+    >
+      <div className="header-container">
+        <table className="header-table">
+          <tbody>
+            <tr className="header-logo">
+              <td className="header-logo-cell">
+                <img src={Girvi?.company?.logo} alt="Company logo" />
+              </td>
+              <td className="header-details">
+                <h1>{Girvi?.company?.name}</h1>
+                <p>{Girvi?.company?.address}</p>
+                <p>Phone: {Girvi?.company?.phone}</p>
+                <p>Email: {Girvi?.company?.email}</p>
+              </td>
+            </tr>
+            <tr>
+              <td colSpan={2} className="header-title">
+                <h2>Girvi Receipt</h2>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+);
 export default function OutlinedCard({
   girvis,
 }: {
   girvis: { girvis: any[] };
 }) {
+  const printRef = useRef<HTMLDivElement>(null);
   const girvidate = girvis.girvis;
   const [open, setOpen] = React.useState(false);
   const [selectedGirvi, setSelectedGirvi] = React.useState<any>(null);
@@ -84,6 +119,14 @@ export default function OutlinedCard({
     }
   }, [selectedGirvi]);
 
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `Girvi-${form.itemno}`,
+    onAfterPrint: () => {
+      console.log("Print completed for", form.itemno);
+      handleClose();
+    },
+  });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "monthlyInterestPer100") {
@@ -275,6 +318,17 @@ export default function OutlinedCard({
               </div>
             </Box>
           </form>
+          <CardActions sx={{ justifyContent: "flex-end" }}>
+            <Print
+              onClick={() => {
+                console.log("printing", form);
+                handlePrint();
+              }}
+            />
+          </CardActions>
+          <div style={{ display: "none" }}>
+            <PrintableGirviForm ref={printRef} Girvi={selectedGirvi} />
+          </div>
         </Box>
       </Modal>
     </Box>

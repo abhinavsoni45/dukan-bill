@@ -10,32 +10,34 @@ import Settings from "./Settings";
 import { useReactiveVar } from "@apollo/client";
 import { authenticatedVar } from "../../constants/authenticated";
 import { Page } from "../../interfaces/page.interface";
-
-const pages: Page[] = [
-  {
-    title: "Bill",
-    path: "/",
-  },
-  {
-    title: "Girvi",
-    path: "/girvi",
-  },
-];
-
-const unauthenticatedPages: Page[] = [
-  {
-    title: "Login",
-    path: "/login",
-  },
-  {
-    title: "Signup",
-    path: "/signup",
-  },
-];
+import { useFindRange } from "../../hooks/useFindRange";
 
 const Header = () => {
   const authenticated = useReactiveVar(authenticatedVar);
+  const { data: seriesData } = useFindRange();
+  const smallestSeries = seriesData?.seriesRange?.smallest;
 
+  const pages: Page[] = [
+    {
+      title: "Bill",
+      path: "/",
+    },
+    {
+      title: "Girvi",
+      path: smallestSeries ? `/girvi/${smallestSeries}` : "/girvi",
+    },
+  ];
+
+  const unauthenticatedPages: Page[] = [
+    {
+      title: "Login",
+      path: "/login",
+    },
+    {
+      title: "Signup",
+      path: "/signup",
+    },
+  ];
   return (
     <AppBar position="static">
       <Container maxWidth="xl">

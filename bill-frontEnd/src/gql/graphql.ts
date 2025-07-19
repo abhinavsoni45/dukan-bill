@@ -50,10 +50,11 @@ export type CreateGirviInput = {
   NameAddress: Scalars['String']['input'];
   TotalAmt?: InputMaybe<Scalars['Float']['input']>;
   date: Scalars['String']['input'];
-  endDate: Scalars['String']['input'];
-  intDue?: InputMaybe<Scalars['Float']['input']>;
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  intDue?: InputMaybe<Scalars['Boolean']['input']>;
   number: Scalars['Int']['input'];
   phno?: InputMaybe<Scalars['Float']['input']>;
+  series: Scalars['Int']['input'];
 };
 
 export type CreateGitemInput = {
@@ -92,12 +93,14 @@ export type Girvi = {
   intDue?: Maybe<Scalars['Boolean']['output']>;
   number?: Maybe<Scalars['Int']['output']>;
   phno?: Maybe<Scalars['Float']['output']>;
+  series?: Maybe<Scalars['Int']['output']>;
   userId?: Maybe<Scalars['String']['output']>;
   viyaj?: Maybe<Scalars['String']['output']>;
 };
 
 export type GirviFilterQuery = {
   filter?: InputMaybe<FilterGirvi>;
+  number?: InputMaybe<Scalars['Float']['input']>;
   sort?: InputMaybe<SortGirvi>;
 };
 
@@ -181,6 +184,7 @@ export type Query = {
   girvi: Girvi;
   girvis: Array<Girvi>;
   me: User;
+  seriesRange: SeriesRange;
   user: User;
   users: Array<User>;
 };
@@ -203,6 +207,12 @@ export type QueryGirvisArgs = {
 
 export type QueryUserArgs = {
   _id: Scalars['String']['input'];
+};
+
+export type SeriesRange = {
+  __typename?: 'SeriesRange';
+  largest?: Maybe<Scalars['Int']['output']>;
+  smallest?: Maybe<Scalars['Int']['output']>;
 };
 
 export type SortGirvi = {
@@ -230,9 +240,10 @@ export type UpdateGirviInput = {
   _id: Scalars['String']['input'];
   date?: InputMaybe<Scalars['String']['input']>;
   endDate?: InputMaybe<Scalars['String']['input']>;
-  intDue?: InputMaybe<Scalars['Float']['input']>;
+  intDue?: InputMaybe<Scalars['Boolean']['input']>;
   number?: InputMaybe<Scalars['Int']['input']>;
   phno?: InputMaybe<Scalars['Float']['input']>;
+  series?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateUserInput = {
@@ -309,19 +320,17 @@ export type UpdateBillMutationVariables = Exact<{
 
 export type UpdateBillMutation = { __typename?: 'Mutation', updateBill: { __typename?: 'Bill', _id: string, number: number, date: string, customerName: string, taxableValue: number, cgst?: number | null, sgst?: number | null, invoiceTotal: number, chequeNo?: string | null, bankName?: string | null, AllItems: Array<{ __typename?: 'Item', hsnCode?: string | null, products: string, grossWt: number, netWt: number, ratePerUnit: number, amountRs: number }> } };
 
-export type UpdateGirviMutationVariables = Exact<{
-  updateGirviInput: UpdateGirviInput;
-}>;
-
-
-export type UpdateGirviMutation = { __typename?: 'Mutation', updateGirvi: { __typename?: 'Girvi', _id: string, userId?: string | null, number?: number | null, NameAddress?: string | null, date?: string | null, phno?: number | null, intDue?: boolean | null, GirviItems?: Array<{ __typename?: 'GirviItem', amtLoan: string, FullDescription: string, grossWt: number, gms: number, Value: string }> | null } };
-
 export type GirvisQueryVariables = Exact<{
   girviFilterQuery?: InputMaybe<GirviFilterQuery>;
 }>;
 
 
-export type GirvisQuery = { __typename?: 'Query', girvis: Array<{ __typename?: 'Girvi', _id: string, userId?: string | null, number?: number | null, NameAddress?: string | null, date?: string | null, endDate?: string | null, GirviItems?: Array<{ __typename?: 'GirviItem', amtLoan: string, FullDescription: string, grossWt: number, Value: string }> | null }> };
+export type GirvisQuery = { __typename?: 'Query', girvis: Array<{ __typename?: 'Girvi', _id: string, userId?: string | null, number?: number | null, NameAddress?: string | null, date?: string | null, series?: number | null, endDate?: string | null, GirviItems?: Array<{ __typename?: 'GirviItem', amtLoan: string, FullDescription: string, grossWt: number, Value: string }> | null }> };
+
+export type SeriesRangeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SeriesRangeQuery = { __typename?: 'Query', seriesRange: { __typename?: 'SeriesRange', smallest?: number | null, largest?: number | null } };
 
 export const BillFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BillFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Bill"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"customerName"}},{"kind":"Field","name":{"kind":"Name","value":"taxableValue"}},{"kind":"Field","name":{"kind":"Name","value":"cgst"}},{"kind":"Field","name":{"kind":"Name","value":"sgst"}},{"kind":"Field","name":{"kind":"Name","value":"invoiceTotal"}},{"kind":"Field","name":{"kind":"Name","value":"chequeNo"}},{"kind":"Field","name":{"kind":"Name","value":"bankName"}},{"kind":"Field","name":{"kind":"Name","value":"AllItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hsnCode"}},{"kind":"Field","name":{"kind":"Name","value":"products"}},{"kind":"Field","name":{"kind":"Name","value":"grossWt"}},{"kind":"Field","name":{"kind":"Name","value":"netWt"}},{"kind":"Field","name":{"kind":"Name","value":"ratePerUnit"}},{"kind":"Field","name":{"kind":"Name","value":"amountRs"}}]}}]}}]} as unknown as DocumentNode<BillFragmentFragment, unknown>;
 export const GirviFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GirviFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Girvi"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"NameAddress"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"GirviItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Value"}}]}}]}}]} as unknown as DocumentNode<GirviFragmentFragment, unknown>;
@@ -334,5 +343,5 @@ export const BillsDocument = {"kind":"Document","definitions":[{"kind":"Operatio
 export const GirviDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"girvi"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"girvi"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"GirviFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"GirviFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Girvi"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"NameAddress"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"GirviItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Value"}}]}}]}}]} as unknown as DocumentNode<GirviQuery, GirviQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 export const UpdateBillDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateBill"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateBillInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateBillInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateBill"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateBillInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateBillInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"customerName"}},{"kind":"Field","name":{"kind":"Name","value":"taxableValue"}},{"kind":"Field","name":{"kind":"Name","value":"cgst"}},{"kind":"Field","name":{"kind":"Name","value":"sgst"}},{"kind":"Field","name":{"kind":"Name","value":"invoiceTotal"}},{"kind":"Field","name":{"kind":"Name","value":"chequeNo"}},{"kind":"Field","name":{"kind":"Name","value":"bankName"}},{"kind":"Field","name":{"kind":"Name","value":"AllItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hsnCode"}},{"kind":"Field","name":{"kind":"Name","value":"products"}},{"kind":"Field","name":{"kind":"Name","value":"grossWt"}},{"kind":"Field","name":{"kind":"Name","value":"netWt"}},{"kind":"Field","name":{"kind":"Name","value":"ratePerUnit"}},{"kind":"Field","name":{"kind":"Name","value":"amountRs"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateBillMutation, UpdateBillMutationVariables>;
-export const UpdateGirviDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateGirvi"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateGirviInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateGirviInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateGirvi"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateGirviInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateGirviInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"NameAddress"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"phno"}},{"kind":"Field","name":{"kind":"Name","value":"intDue"}},{"kind":"Field","name":{"kind":"Name","value":"GirviItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amtLoan"}},{"kind":"Field","name":{"kind":"Name","value":"FullDescription"}},{"kind":"Field","name":{"kind":"Name","value":"grossWt"}},{"kind":"Field","name":{"kind":"Name","value":"gms"}},{"kind":"Field","name":{"kind":"Name","value":"Value"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateGirviMutation, UpdateGirviMutationVariables>;
-export const GirvisDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Girvis"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"girviFilterQuery"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"GirviFilterQuery"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"girvis"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"girviFilterQuery"},"value":{"kind":"Variable","name":{"kind":"Name","value":"girviFilterQuery"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"NameAddress"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"GirviItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amtLoan"}},{"kind":"Field","name":{"kind":"Name","value":"FullDescription"}},{"kind":"Field","name":{"kind":"Name","value":"grossWt"}},{"kind":"Field","name":{"kind":"Name","value":"Value"}}]}}]}}]}}]} as unknown as DocumentNode<GirvisQuery, GirvisQueryVariables>;
+export const GirvisDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Girvis"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"girviFilterQuery"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"GirviFilterQuery"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"girvis"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"girviFilterQuery"},"value":{"kind":"Variable","name":{"kind":"Name","value":"girviFilterQuery"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"NameAddress"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"series"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"GirviItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amtLoan"}},{"kind":"Field","name":{"kind":"Name","value":"FullDescription"}},{"kind":"Field","name":{"kind":"Name","value":"grossWt"}},{"kind":"Field","name":{"kind":"Name","value":"Value"}}]}}]}}]}}]} as unknown as DocumentNode<GirvisQuery, GirvisQueryVariables>;
+export const SeriesRangeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"seriesRange"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"seriesRange"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"smallest"}},{"kind":"Field","name":{"kind":"Name","value":"largest"}}]}}]}}]} as unknown as DocumentNode<SeriesRangeQuery, SeriesRangeQueryVariables>;

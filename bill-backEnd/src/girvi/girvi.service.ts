@@ -28,6 +28,9 @@ export class GirviService {
 
   async findAll(girviFilterQuery?: GirviFilterQuery) {
     const filter = {};
+    if (girviFilterQuery?.number) {
+      filter['series'] = girviFilterQuery.number;
+    }
     if (girviFilterQuery?.filter?.status === 'blue') {
       filter['endDate'] = { $ne: null };
     } else if (girviFilterQuery?.filter?.status === 'yellow') {
@@ -53,6 +56,35 @@ export class GirviService {
     }
 
     return this.girviRepository.find(filter, { sort });
+  }
+
+  // In your girvi.service.ts
+
+  async findSeriesRange() {
+    try {
+      const result = await this.girviRepository.aggregate([
+        {
+          $group: {
+            _id: null,
+            minSeries: { $min: '$series' },
+            maxSeries: { $max: '$series' },
+          },
+        },
+      ]);
+
+      return result.length > 0
+        ? {
+            smallest: result[0].minSeries,
+            largest: result[0].maxSeries,
+          }
+        : {
+            smallest: null,
+            largest: null,
+          };
+    } catch (error) {
+      console.error('Error finding series range:', error);
+      throw error;
+    }
   }
 
   async findOne(_id: string) {

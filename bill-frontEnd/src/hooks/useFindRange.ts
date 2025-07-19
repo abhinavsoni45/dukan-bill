@@ -1,0 +1,1 @@
+export { useFindRange } from "../resolvers/girvi.resolvers";

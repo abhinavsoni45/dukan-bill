@@ -58,17 +58,15 @@ export class CreateGirviInput {
   @IsString()
   date: string;
 
-  @Field()
-  @IsString()
-  endDate: string;
+  @Field({ nullable: true })
+  endDate?: string;
 
-  @Field(() => Float, { nullable: true })
-  @IsNumber()
+  @Field({ nullable: true })
   @IsOptional()
-  phno?: number;
+  phno?: string;
 
-  @Field(() => Float, { nullable: true })
-  @IsNumber()
+  @Field({ nullable: true })
+  @IsOptional()
   intDue?: boolean;
 
   @Field(() => Float, { nullable: true })
