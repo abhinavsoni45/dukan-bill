@@ -28,9 +28,9 @@ export class Girvi extends AbstractEntity {
   @Prop()
   date: string;
 
-  @Field(() => Float, { nullable: true })
+  @Field({ nullable: true })
   @Prop()
-  phno?: number;
+  phno?: string;
 
   @Field({ nullable: true })
   @Prop()
