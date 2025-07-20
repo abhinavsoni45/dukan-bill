@@ -1,4 +1,6 @@
 import * as React from "react";
+// import "./card.css";
+import { PrintableGirviForm } from "./PrintableGirviForm";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -42,37 +44,6 @@ const CardBody = ({ girvi, onClick }: { girvi: any; onClick: () => void }) => (
   </React.Fragment>
 );
 
-export const PrintableGirviForm = React.forwardRef(
-  ({ Girvi }: { Girvi: any }, ref: React.Ref<HTMLDivElement>) => (
-    <div
-      ref={ref}
-      style={{ padding: 24, backgroundColor: "#fff", color: "#000" }}
-    >
-      <div className="header-container">
-        <table className="header-table">
-          <tbody>
-            <tr className="header-logo">
-              <td className="header-logo-cell">
-                <img src={Girvi?.company?.logo} alt="Company logo" />
-              </td>
-              <td className="header-details">
-                <h1>{Girvi?.company?.name}</h1>
-                <p>{Girvi?.company?.address}</p>
-                <p>Phone: {Girvi?.company?.phone}</p>
-                <p>Email: {Girvi?.company?.email}</p>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={2} className="header-title">
-                <h2>Girvi Receipt</h2>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-);
 export default function OutlinedCard({
   girvis,
 }: {

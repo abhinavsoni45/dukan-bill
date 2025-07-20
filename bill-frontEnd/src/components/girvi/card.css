@@ -1,0 +1,275 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Times New Roman", serif;
+  background-color: #f0f0f0;
+}
+
+.no-print {
+  padding: 20px;
+  text-align: center;
+}
+
+.print-button {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.print-button:hover {
+  background-color: #1976d2;
+}
+
+.print-container {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  background: white;
+  border: 2px solid black;
+  padding: 10mm;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.form-title {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.pawn-ticket-title {
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 8px;
+}
+
+.business-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.business-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.business-address {
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.proprietor {
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.number-section,
+.date-section {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.underline-field {
+  border-bottom: 1px solid black;
+  min-width: 60px;
+  text-align: center;
+  margin-left: 5px;
+  padding: 2px;
+  font-weight: bold;
+}
+
+.customer-details {
+  margin-bottom: 15px;
+  font-size: 12px;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 5px;
+  align-items: center;
+}
+
+.detail-label {
+  min-width: 140px;
+  font-size: 12px;
+}
+
+.detail-value {
+  border-bottom: 1px solid black;
+  flex: 1;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.kannada-text {
+  font-size: 11px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* .items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  font-size: 11px;
+}
+
+.items-table th,
+.items-table td {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  padding: 6px 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+.items-table th:first-child,
+.items-table td:first-child {
+  border-left: 1px solid black;
+}
+
+.items-table th:last-child,
+.items-table td:last-child {
+  border-right: 1px solid black;
+}
+
+.items-table th {
+  font-weight: bold;
+  background-color: #f9f9f9;
+} */
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  font-size: 11px;
+}
+
+.items-table thead tr {
+  border-bottom: 1px solid black;
+}
+.items-table th,
+.items-table td {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  padding: 6px 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.items-table th:first-child,
+.items-table td:first-child {
+  border-left: 1px solid black;
+}
+
+.items-table th:last-child,
+.items-table td:last-child {
+  border-right: 1px solid black;
+}
+
+.items-table th {
+  font-weight: bold;
+  background-color: #f9f9f9;
+  border-top: 1px solid black; /* Add top border to header */
+}
+
+/* Add bottom border to the last row */
+.items-table tbody tr:last-child td {
+  border-bottom: 1px solid black;
+}
+
+.description-cell {
+  text-align: left;
+  min-width: 150px;
+}
+
+.empty-row {
+  height: 40px;
+}
+
+.notice-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.notice-text {
+  font-size: 11px;
+  border-bottom: 1px solid black;
+  padding-bottom: 3px;
+  margin-bottom: 3px;
+}
+
+.notice-subtext {
+  font-size: 10px;
+  color: #666;
+}
+
+.signatures {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  min-height: 80px;
+}
+
+.signature-section {
+  width: 45%;
+  text-align: center;
+}
+
+.signature-line {
+  border-bottom: 1px solid black;
+  height: 60px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.signature-label {
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-container {
+    border: none;
+    margin: 0;
+    padding: 5mm;
+    width: 100%;
+    min-height: 100%;
+  }
+
+  @page {
+    size: A4;
+    margin: 5mm;
+  }
+}
