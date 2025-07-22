@@ -21,6 +21,7 @@ import { useReactToPrint } from "react-to-print";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CustomTextField } from "../../elements/UI";
 import { Add, ContentCopy, Print } from "@mui/icons-material";
+import { PrintableInvoice } from "../Printables/PrintableInvoice";
 import { useCreateBill } from "../../hooks/useCreateBill";
 import { useUpdateBill } from "../../hooks/useUpdateBill";
 
@@ -50,97 +51,6 @@ const validationSchema = Yup.object({
   //   })
   // ),
 });
-
-export const PrintableInvoice = React.forwardRef(
-  ({ bill }: { bill: any }, ref: React.Ref<HTMLDivElement>) => (
-    <div
-      ref={ref}
-      style={{ padding: 24, backgroundColor: "#fff", color: "#000" }}
-    >
-      <div className="header-container">
-        <table className="header-table">
-          <tbody>
-            <tr>
-              <td className="header-logo">
-                <img src={bill?.company?.logo} alt="Company Logo" />
-              </td>
-              <td className="header-details">
-                <h2>{bill?.company?.name}</h2>
-                <p>{bill?.company?.address}</p>
-                <p>{bill?.company?.phone}</p>
-                <p>{bill?.company?.email}</p>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3}>
-                <b>Name: </b> {bill?.customer?.name || "N/A"}
-                <br />
-                <b>Phone: </b> {bill?.customer?.phone || "N/A"}
-                <br />
-                <b>Address: </b> {bill?.customer?.address || "N/A"}
-                <br />
-                <b>Bill No: </b> {bill?.billNo || "N/A"}
-                <br />
-                <b>PAN No: </b> {bill?.customer?.panNo || "N/A"}
-                <br />
-              </td>
-              <td colSpan={2}>
-                <div className="bold center">Original</div>
-                <br />
-                <b>Invoice No:</b> {bill?.number}
-                <br />
-                <b>Invoice Date:</b> {bill?.date}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Sr. No.</th>
-            <th>
-              Description
-              <br />
-              HUID:
-            </th>
-            <th>HSN Code</th>
-            <th>PCS</th>
-            <th>Gross Wt.</th>
-            <th>Net Wt.</th>
-            <th>Rate</th>
-            <th>Labour</th>
-            <th>Total Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bill?.AllItems?.map((item: any, idx: number) => (
-            <tr key={idx}>
-              <td>{idx + 1}</td>
-              <td>{item?.products}</td>
-              <td>{item?.hsnCode}</td>
-              <td>1</td>
-              <td>{item?.grossWt}</td>
-              <td>{item?.netWt}</td>
-              <td>{item?.ratePerUnit}</td>
-              <td>-</td>
-              <td>{item?.amountRs}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {/* ...rest of your invoice HTML... */}
-      <table>
-        <tbody>
-          <tr>
-            <td className="bold">Total Amount:</td>
-            <td>{bill?.invoiceTotal}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  )
-);
 
 const CustomTextFieldDelete = ({ label, name, onDelete, ...props }: any) => {
   return (

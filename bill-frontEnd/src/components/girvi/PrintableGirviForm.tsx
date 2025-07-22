@@ -20,7 +20,8 @@ export const PrintableGirviForm = React.forwardRef<
           Pawn Brokers, Main Bazar, HOSPET-583 201. (Vijayanagara Dist.)
         </div>
         <div className="business-address">
-          ರಾಧಾಕೃಷ್ಣ ಜ್ಯುವೆಲ್ಲರ್ಸ್, ಮೇಯ್ ಬಜಾರ್, ಹೊಸಪೇಟೆ-583 201. (ವಿಜಯನಗರ ಜಿಲ್ಲೆ)
+          ರಾಧಾಕೃಷ್ಣ ಜ್ಯುವೆಲ್ಲರ್ಸ್, ಪಾನ್ ಬ್ರೋಕರ್ಸ್, ಮೆನ್ ಬಜಾರ್, ಹೊಸಪೇಟೆ-583 201.
+          (ವಿಜಯನಗರ ಜಿಲ್ಲೆ)
         </div>
         <div className="proprietor">Prop: Soni NareshKumar Champalal</div>
       </div>
@@ -51,7 +52,7 @@ export const PrintableGirviForm = React.forwardRef<
           </span>
         </div>
 
-        <div className="kannada-text">ಗ್ರಾಹಕ ಹೆಸರು ಮತ್ತು ವಿಳಾಸ:</div>
+        <div className="kannada-text">ಅಸಮಿ ಹೆಸರು ವಿಳಾಸ:</div>
 
         <div style={{ margin: "8px 0", fontSize: "12px" }}>
           The following article / articles are pawned with me:

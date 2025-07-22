@@ -53,7 +53,7 @@ export type CreateGirviInput = {
   endDate?: InputMaybe<Scalars['String']['input']>;
   intDue?: InputMaybe<Scalars['Boolean']['input']>;
   number: Scalars['Int']['input'];
-  phno?: InputMaybe<Scalars['Float']['input']>;
+  phno?: InputMaybe<Scalars['String']['input']>;
   series: Scalars['Int']['input'];
 };
 
@@ -92,7 +92,7 @@ export type Girvi = {
   endDate?: Maybe<Scalars['String']['output']>;
   intDue?: Maybe<Scalars['Boolean']['output']>;
   number?: Maybe<Scalars['Int']['output']>;
-  phno?: Maybe<Scalars['Float']['output']>;
+  phno?: Maybe<Scalars['String']['output']>;
   series?: Maybe<Scalars['Int']['output']>;
   userId?: Maybe<Scalars['String']['output']>;
   viyaj?: Maybe<Scalars['String']['output']>;
@@ -242,7 +242,7 @@ export type UpdateGirviInput = {
   endDate?: InputMaybe<Scalars['String']['input']>;
   intDue?: InputMaybe<Scalars['Boolean']['input']>;
   number?: InputMaybe<Scalars['Int']['input']>;
-  phno?: InputMaybe<Scalars['Float']['input']>;
+  phno?: InputMaybe<Scalars['String']['input']>;
   series?: InputMaybe<Scalars['Int']['input']>;
 };
 
