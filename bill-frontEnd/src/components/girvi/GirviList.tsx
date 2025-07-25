@@ -11,7 +11,7 @@ import { Canvas } from "../../elements/UI";
 import { TopBar } from "./TopBar";
 import { Add, AddCircle } from "@mui/icons-material";
 import GirviForm from "./GirviForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGetGirvis } from "../../hooks/useGetGirvis";
 import { useSearch } from "../context/SearchContext";
 import { useFindRange } from "../../resolvers/girvi.resolvers";
@@ -29,7 +29,24 @@ export const GirviList = ({ filter, sort }: any) => {
     seriesError,
     "seriesError"
   );
+
   const [open, setOpen] = useState(false);
+  const smallest = seriesData?.seriesRange?.smallest;
+  const largest = seriesData?.seriesRange?.largest;
+  const totalPages = largest && smallest ? largest - smallest + 1 : 0;
+
+  // Set initial page to largest when seriesData is loaded
+  const [currentPage, setCurrentPage] = useState<number | null>(null);
+
+  // Set currentPage to largest when seriesData changes and currentPage is null
+  // Use useEffect so hooks always run and component can render
+  useEffect(() => {
+    if (currentPage === null && largest !== undefined) {
+      setCurrentPage(largest);
+    }
+  }, [largest, currentPage]);
+
+  // Fetch girvi data for the current page (number)
   const { data, loading, error } = useGetGirvis({
     filter: {
       status: filter,
@@ -37,50 +54,50 @@ export const GirviList = ({ filter, sort }: any) => {
     sort: {
       sortBy: sort,
     },
-    number: seriesData?.seriesRange?.smallest,
+    number: currentPage,
   });
 
-  const [getGirviList, setGirviList] = useState([]);
   const { searchTerm } = useSearch();
 
-  const [currentPage, setCurrentPage] = useState<number | null>(null);
-  const smallest = seriesData?.seriesRange?.smallest;
-  const largest = seriesData?.seriesRange?.largest;
-  const totalPages = largest - smallest + 1;
-
-  if (currentPage === null) {
-    setCurrentPage(smallest);
-    return null; // Prevent premature rendering
-  }
-
-  const filteredData = {
-    ...data,
-    girvis:
-      data?.girvis?.filter((girvi: any) => {
-        const searchLower = searchTerm.toLowerCase();
-        return (
-          girvi?.NameAddress?.toLowerCase().includes(searchLower) ||
-          // girvi?.number?.toString().includes(searchLower) ||
-          // girvi?.phno?.toString().includes(searchLower) ||
-          girvi?.date?.toLowerCase().includes(searchLower)
-        );
-      }) || [],
-  };
+  // Only filter if data is available
+  const filteredData =
+    data && data.girvis
+      ? {
+          ...data,
+          girvis: data.girvis.filter((girvi: any) => {
+            const searchLower = searchTerm.toLowerCase();
+            return (
+              girvi?.NameAddress?.toLowerCase().includes(searchLower) ||
+              girvi?.number?.toString().includes(searchLower) ||
+              girvi?.phno?.toString().includes(searchLower) ||
+              girvi?.date?.toLowerCase().includes(searchLower)
+            );
+          }),
+        }
+      : { girvis: [] };
   console.log(loading, error, data, "girvidata", data?.girvis, filteredData);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  // Only render UI when currentPage and data are available
+  if (currentPage === null || !data) {
+    return null;
+  }
 
   return (
     <>
       <div style={{ height: "92vh" }}>
         <TopBar />
         <Pagination
-          page={currentPage - smallest + 1} // MUI expects 1-based index
+          page={
+            currentPage && smallest !== undefined
+              ? currentPage - smallest + 1
+              : 1
+          } // MUI expects 1-based index
           count={totalPages}
           onChange={(event: any, pageIndex: any) => {
             const actualPage = smallest + pageIndex - 1;
             setCurrentPage(actualPage); // store real page number
-            console.log("Selected page:", actualPage);
           }}
           renderItem={(item: any) => (
             <PaginationItem
@@ -88,8 +105,6 @@ export const GirviList = ({ filter, sort }: any) => {
               page={item.page ? smallest + item.page - 1 : item.page}
             />
           )}
-          // variant="outlined"
-          // shape="rounded"
           style={{
             margin: "10px 0",
             display: "flex",

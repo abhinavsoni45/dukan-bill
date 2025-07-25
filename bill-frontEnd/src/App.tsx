@@ -2,7 +2,6 @@ import {
   Container,
   CssBaseline,
   Grid,
-  Modal,
   ThemeProvider,
   createTheme,
 } from "@mui/material";
@@ -20,15 +19,12 @@ import { usePath } from "./hooks/usePath";
 //   ModalContext,
 //   ModalProvider,
 // } from "./context/modalContext";
-import { useContext, useState } from "react";
-import ChatListAdd from "./components/chat-list/chat-list-add/ChatListAdd";
+import { useState } from "react";
 import InvoiceForm from "./components/chat-list/Invoice";
-import { LightMode } from "@mui/icons-material";
 import { FilterList } from "./components/girvi/FilterList";
 import { GirviList } from "./components/girvi/GirviList";
 import { SearchProvider } from "./components/context/SearchContext";
 import Header from "./components/header/Header";
-import { useFindRange } from "./resolvers/girvi.resolvers";
 
 const darkTheme = createTheme({
   palette: {
@@ -87,20 +83,20 @@ const App = () => {
       <ThemeProvider theme={isLightTheme ? lightTheme : lightTheme}>
         <CssBaseline />
         <Header />
-        <Guard>
-          {showBillList ? (
-            <Grid container>
-              <Grid item md={3}>
-                <ChatList />
+        <SearchProvider>
+          <Guard>
+            {showBillList ? (
+              <Grid container>
+                <Grid item md={3}>
+                  <ChatList />
+                </Grid>
+                <Grid item md={9}>
+                  <InvoiceForm onThemeToggle={handleThemeChange} />
+                  {/* <Modal></Modal> */}
+                  {/* <Routes /> */}
+                </Grid>
               </Grid>
-              <Grid item md={9}>
-                <InvoiceForm onThemeToggle={handleThemeChange} />
-                {/* <Modal></Modal> */}
-                {/* <Routes /> */}
-              </Grid>
-            </Grid>
-          ) : showGirviList ? (
-            <SearchProvider>
+            ) : showGirviList ? (
               <Grid container>
                 <Grid item md={3}>
                   <FilterList
@@ -119,15 +115,15 @@ const App = () => {
                   {/* <h1>Hello worlds</h1> */}
                 </Grid>
               </Grid>
-            </SearchProvider>
-          ) : (
-            // <div>
-            //   <h1>Hello World</h1>
-            //   {/* You can replace this with any component you want to show on the /girvi path */}
-            // </div>
-            <Routes />
-          )}
-        </Guard>
+            ) : (
+              // <div>
+              //   <h1>Hello World</h1>
+              //   {/* You can replace this with any component you want to show on the /girvi path */}
+              // </div>
+              <Routes />
+            )}
+          </Guard>
+        </SearchProvider>
         <Snackbar />
         {/* <Modal /> */}
       </ThemeProvider>

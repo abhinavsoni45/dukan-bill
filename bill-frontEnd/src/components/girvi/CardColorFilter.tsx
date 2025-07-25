@@ -13,6 +13,7 @@ export const CardColorFilter = ({ filter, setFilter }: any) => {
         id="color-filter-select"
         value={filter}
         label="Filter by color"
+        variant="standard"
         onChange={handleChange}
       >
         <MenuItem value="all">All</MenuItem>

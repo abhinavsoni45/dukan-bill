@@ -67,7 +67,6 @@ export default function SearchAppBar() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Search>
-          <FileUpload></FileUpload>
         </Toolbar>
       </AppBar>
     </Box>

@@ -16,6 +16,7 @@ const Header = () => {
   const authenticated = useReactiveVar(authenticatedVar);
   const { data: seriesData } = useFindRange();
   const smallestSeries = seriesData?.seriesRange?.smallest;
+  const largestSeries = seriesData?.seriesRange?.largest;
 
   const pages: Page[] = [
     {
@@ -24,7 +25,7 @@ const Header = () => {
     },
     {
       title: "Girvi",
-      path: smallestSeries ? `/girvi/${smallestSeries}` : "/girvi",
+      path: smallestSeries ? `/girvi` : "/girvi",
     },
   ];
 
