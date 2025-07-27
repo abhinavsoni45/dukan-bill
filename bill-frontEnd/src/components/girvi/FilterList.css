@@ -1,0 +1,26 @@
+.filter-container {
+  padding: 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.filter-row {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-row:last-child {
+  border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filter-container {
+    padding: 15px 20px;
+  }
+
+  .filter-row {
+    padding: 12px 0;
+  }
+}

@@ -6,7 +6,6 @@ import Toolbar from "@mui/material/Toolbar";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import { useSearch } from "../context/SearchContext";
-import FileUpload from "./FileUpload";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -17,10 +16,7 @@ const Search = styled("div")(({ theme }) => ({
   },
   marginLeft: 0,
   width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
+  flex: 1,
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -38,29 +34,24 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    width: "100%",
     transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
   },
 }));
 
 export default function SearchAppBar() {
   const { searchTerm, setSearchTerm } = useSearch();
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
+    <Box sx={{ width: "100%" }}>
+      <AppBar position="static" sx={{ width: "100%" }}>
+        <Toolbar sx={{ width: "100%", p: 0 }}>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              fullWidth
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
               value={searchTerm}

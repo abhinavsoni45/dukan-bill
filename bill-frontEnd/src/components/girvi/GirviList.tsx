@@ -15,8 +15,11 @@ import { useState, useEffect } from "react";
 import { useGetGirvis } from "../../hooks/useGetGirvis";
 import { useSearch } from "../context/SearchContext";
 import { useFindRange } from "../../resolvers/girvi.resolvers";
+import { useTimeFilter } from "../context/TimeFilterContext";
 
+export type listType = "serie" | "masterData";
 export const GirviList = ({ filter, sort }: any) => {
+  const { startDate, endDate, setDefaultDates } = useTimeFilter();
   const {
     data: seriesData,
     loading: seriesLoading,
@@ -31,6 +34,8 @@ export const GirviList = ({ filter, sort }: any) => {
   );
 
   const [open, setOpen] = useState(false);
+
+  const [listType, setListType] = useState("serie");
   const smallest = seriesData?.seriesRange?.smallest;
   const largest = seriesData?.seriesRange?.largest;
   const totalPages = largest && smallest ? largest - smallest + 1 : 0;
@@ -38,6 +43,7 @@ export const GirviList = ({ filter, sort }: any) => {
   // Set initial page to largest when seriesData is loaded
   const [currentPage, setCurrentPage] = useState<number | null>(null);
 
+  console.log(listType, "listType");
   // Set currentPage to largest when seriesData changes and currentPage is null
   // Use useEffect so hooks always run and component can render
   useEffect(() => {
@@ -46,18 +52,34 @@ export const GirviList = ({ filter, sort }: any) => {
     }
   }, [largest, currentPage]);
 
-  // Fetch girvi data for the current page (number)
-  const { data, loading, error } = useGetGirvis({
+  // Fetch girvi data: for 'serie', use number; for 'masterData', fetch all
+  const girviFilterQuery: any = {
     filter: {
       status: filter,
     },
     sort: {
       sortBy: sort,
     },
-    number: currentPage,
-  });
+  };
+  if (listType === "serie") {
+    girviFilterQuery.number = currentPage;
+  }
+  const { data, loading, error } = useGetGirvis(girviFilterQuery);
 
   const { searchTerm } = useSearch();
+
+  // Set default dates from girvi data (first and last date)
+  useEffect(() => {
+    if (data && data.girvis && data.girvis.length > 0) {
+      // Sort by date ascending
+      const sorted = [...data.girvis].sort((a, b) =>
+        a.date > b.date ? 1 : -1
+      );
+      const firstDate = sorted[0]?.date || "";
+      const lastDate = sorted[sorted.length - 1]?.date || "";
+      setDefaultDates({ start: firstDate, end: lastDate });
+    }
+  }, [data, setDefaultDates]);
 
   // Only filter if data is available
   const filteredData =
@@ -65,12 +87,21 @@ export const GirviList = ({ filter, sort }: any) => {
       ? {
           ...data,
           girvis: data.girvis.filter((girvi: any) => {
+            // Date filter logic
+            let inDateRange = true;
+            if (startDate) {
+              inDateRange = inDateRange && girvi.date >= startDate;
+            }
+            if (endDate) {
+              inDateRange = inDateRange && girvi.date <= endDate;
+            }
             const searchLower = searchTerm.toLowerCase();
             return (
-              girvi?.NameAddress?.toLowerCase().includes(searchLower) ||
-              girvi?.number?.toString().includes(searchLower) ||
-              girvi?.phno?.toString().includes(searchLower) ||
-              girvi?.date?.toLowerCase().includes(searchLower)
+              inDateRange &&
+              (girvi?.NameAddress?.toLowerCase().includes(searchLower) ||
+                girvi?.number?.toString().includes(searchLower) ||
+                girvi?.phno?.toString().includes(searchLower) ||
+                girvi?.date?.toLowerCase().includes(searchLower))
             );
           }),
         }
@@ -79,60 +110,44 @@ export const GirviList = ({ filter, sort }: any) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Only render UI when currentPage and data are available
-  if (currentPage === null || !data) {
+  // Only render UI when data is available (for serie, also require currentPage)
+  if (
+    (listType === "serie" && (currentPage === null || !data)) ||
+    (listType === "masterData" && !data)
+  ) {
     return null;
   }
 
   return (
-    <>
-      <div style={{ height: "92vh" }}>
-        <TopBar />
-        <Pagination
-          page={
-            currentPage && smallest !== undefined
-              ? currentPage - smallest + 1
-              : 1
-          } // MUI expects 1-based index
-          count={totalPages}
-          onChange={(event: any, pageIndex: any) => {
-            const actualPage = smallest + pageIndex - 1;
-            setCurrentPage(actualPage); // store real page number
-          }}
-          renderItem={(item: any) => (
-            <PaginationItem
-              {...item}
-              page={item.page ? smallest + item.page - 1 : item.page}
-            />
-          )}
-          style={{
-            margin: "10px 0",
-            display: "flex",
-            justifyContent: "center",
-          }}
-          color="primary"
-          size="large"
-        />
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            marginTop: "4px",
-            gap: "4px",
-          }}
-        >
-          <OutlinedCard girvis={filteredData} />
-        </div>
-        <IconButton
-          size="large"
-          edge="start"
-          onClick={handleOpen}
-          style={{ bottom: "5vh", right: "3vw", position: "absolute" }}
-        >
-          <AddCircle color="primary" />
-        </IconButton>
-        <GirviForm open={open} handleClose={handleClose} />
+    <div style={{ height: "92vh" }}>
+      <TopBar
+        listType={listType}
+        setListType={setListType}
+        showPagination={listType === "serie"}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        smallest={smallest}
+        totalPages={totalPages}
+      />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          marginTop: "4px",
+          gap: "4px",
+        }}
+      >
+        <OutlinedCard girvis={filteredData} />
       </div>
-    </>
+      <IconButton
+        size="large"
+        edge="start"
+        onClick={handleOpen}
+        style={{ bottom: "5vh", right: "3vw", position: "absolute" }}
+      >
+        <AddCircle color="primary" />
+      </IconButton>
+      <GirviForm open={open} handleClose={handleClose} />
+    </div>
   );
 };
