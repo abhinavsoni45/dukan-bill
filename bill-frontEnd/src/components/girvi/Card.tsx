@@ -12,6 +12,15 @@ import { Print } from "@mui/icons-material";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const CardBody = ({ girvi, onClick }: { girvi: any; onClick: () => void }) => (
   <React.Fragment>
     <CardContent onClick={onClick} style={{ cursor: "pointer" }}>
@@ -38,7 +47,7 @@ const CardBody = ({ girvi, onClick }: { girvi: any; onClick: () => void }) => (
         ₹ {girvi?.GirviItems[0]?.amtLoan}
       </Typography>
       <Typography sx={{ color: "black", mb: 1.5, textAlign: "center" }}>
-        {girvi?.date}
+        {formatDate(girvi?.date)}
       </Typography>
     </CardContent>
   </React.Fragment>
@@ -78,12 +87,12 @@ export default function OutlinedCard({
     if (selectedGirvi) {
       setForm({
         itemno: selectedGirvi.number ?? "",
-        date: selectedGirvi.date ?? "",
+        date: formatDate(selectedGirvi.date) ?? "",
         amtLoan: selectedGirvi.GirviItems?.[0]?.amtLoan ?? "",
         NameAddress: selectedGirvi.NameAddress ?? "",
         endDate: selectedGirvi.endDate
-          ? selectedGirvi.endDate
-          : new Date().toISOString().slice(0, 10),
+          ? formatDate(selectedGirvi.endDate)
+          : formatDate(new Date().toISOString()),
         interestRate: selectedGirvi.interestRate ?? 24,
         monthlyInterestPer100: selectedGirvi.monthlyInterestPer100 ?? 2,
       });

@@ -55,11 +55,10 @@ export class CreateGirviInput {
   NameAddress: string;
 
   @Field()
-  @IsString()
-  date: string;
+  date: Date;
 
   @Field({ nullable: true })
-  endDate?: string;
+  endDate?: Date;
 
   @Field({ nullable: true })
   @IsOptional()

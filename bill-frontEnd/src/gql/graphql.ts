@@ -14,6 +14,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: { input: any; output: any; }
 };
 
 export type Bill = {
@@ -49,8 +51,8 @@ export type CreateGirviInput = {
   GirviItems: Array<CreateGitemInput>;
   NameAddress: Scalars['String']['input'];
   TotalAmt?: InputMaybe<Scalars['Float']['input']>;
-  date: Scalars['String']['input'];
-  endDate?: InputMaybe<Scalars['String']['input']>;
+  date: Scalars['DateTime']['input'];
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
   intDue?: InputMaybe<Scalars['Boolean']['input']>;
   number: Scalars['Int']['input'];
   phno?: InputMaybe<Scalars['String']['input']>;
@@ -88,8 +90,8 @@ export type Girvi = {
   GirviItems?: Maybe<Array<GirviItem>>;
   NameAddress?: Maybe<Scalars['String']['output']>;
   _id: Scalars['ID']['output'];
-  date?: Maybe<Scalars['String']['output']>;
-  endDate?: Maybe<Scalars['String']['output']>;
+  date?: Maybe<Scalars['DateTime']['output']>;
+  endDate?: Maybe<Scalars['DateTime']['output']>;
   intDue?: Maybe<Scalars['Boolean']['output']>;
   number?: Maybe<Scalars['Int']['output']>;
   phno?: Maybe<Scalars['String']['output']>;
@@ -238,8 +240,8 @@ export type UpdateGirviInput = {
   NameAddress?: InputMaybe<Scalars['String']['input']>;
   TotalAmt?: InputMaybe<Scalars['Float']['input']>;
   _id: Scalars['String']['input'];
-  date?: InputMaybe<Scalars['String']['input']>;
-  endDate?: InputMaybe<Scalars['String']['input']>;
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
   intDue?: InputMaybe<Scalars['Boolean']['input']>;
   number?: InputMaybe<Scalars['Int']['input']>;
   phno?: InputMaybe<Scalars['String']['input']>;
@@ -259,7 +261,7 @@ export type User = {
 
 export type BillFragmentFragment = { __typename?: 'Bill', _id: string, userId: string, number: number, date: string, customerName: string, taxableValue: number, cgst?: number | null, sgst?: number | null, invoiceTotal: number, chequeNo?: string | null, bankName?: string | null, AllItems: Array<{ __typename?: 'Item', hsnCode?: string | null, products: string, grossWt: number, netWt: number, ratePerUnit: number, amountRs: number }> };
 
-export type GirviFragmentFragment = { __typename?: 'Girvi', _id: string, userId?: string | null, NameAddress?: string | null, date?: string | null, GirviItems?: Array<{ __typename?: 'GirviItem', Value: string }> | null };
+export type GirviFragmentFragment = { __typename?: 'Girvi', _id: string, userId?: string | null, NameAddress?: string | null, date?: any | null, GirviItems?: Array<{ __typename?: 'GirviItem', Value: string }> | null };
 
 export type CreateBillMutationVariables = Exact<{
   createBillInput: CreateBillInput;
@@ -273,7 +275,7 @@ export type CreateGirviMutationVariables = Exact<{
 }>;
 
 
-export type CreateGirviMutation = { __typename?: 'Mutation', createGirvi: { __typename?: 'Girvi', _id: string, userId?: string | null, NameAddress?: string | null, date?: string | null, GirviItems?: Array<{ __typename?: 'GirviItem', Value: string }> | null } };
+export type CreateGirviMutation = { __typename?: 'Mutation', createGirvi: { __typename?: 'Girvi', _id: string, userId?: string | null, NameAddress?: string | null, date?: any | null, GirviItems?: Array<{ __typename?: 'GirviItem', Value: string }> | null } };
 
 export type CreateUserMutationVariables = Exact<{
   createUserInput: CreateUserInput;
@@ -306,7 +308,7 @@ export type GirviQueryVariables = Exact<{
 }>;
 
 
-export type GirviQuery = { __typename?: 'Query', girvi: { __typename?: 'Girvi', _id: string, userId?: string | null, NameAddress?: string | null, date?: string | null, GirviItems?: Array<{ __typename?: 'GirviItem', Value: string }> | null } };
+export type GirviQuery = { __typename?: 'Query', girvi: { __typename?: 'Girvi', _id: string, userId?: string | null, NameAddress?: string | null, date?: any | null, GirviItems?: Array<{ __typename?: 'GirviItem', Value: string }> | null } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -325,7 +327,7 @@ export type GirvisQueryVariables = Exact<{
 }>;
 
 
-export type GirvisQuery = { __typename?: 'Query', girvis: Array<{ __typename?: 'Girvi', _id: string, userId?: string | null, number?: number | null, NameAddress?: string | null, date?: string | null, series?: number | null, endDate?: string | null, GirviItems?: Array<{ __typename?: 'GirviItem', amtLoan: string, FullDescription: string, grossWt: number, Value: string }> | null }> };
+export type GirvisQuery = { __typename?: 'Query', girvis: Array<{ __typename?: 'Girvi', _id: string, userId?: string | null, number?: number | null, NameAddress?: string | null, date?: any | null, series?: number | null, endDate?: any | null, GirviItems?: Array<{ __typename?: 'GirviItem', amtLoan: string, FullDescription: string, grossWt: number, Value: string }> | null }> };
 
 export type SeriesRangeQueryVariables = Exact<{ [key: string]: never; }>;
 

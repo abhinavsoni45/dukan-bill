@@ -172,6 +172,29 @@ export class GirviService {
       return `${day}/${month}/${year}`;
     }
 
+    function parseDateField(date: any): string {
+      if (!date) return null;
+      if (typeof date === 'number') {
+        // Excel serial date
+        const utc_days = Math.floor(date - 25569);
+        const utc_value = utc_days * 86400;
+        const date_info = new Date(utc_value * 1000);
+        return date_info.toISOString();
+      }
+      if (typeof date === 'string') {
+        // Try to parse DD/MM/YYYY or ISO
+        if (date.includes('/')) {
+          const [day, month, year] = date.split('/').map(Number);
+          return new Date(year, month - 1, day).toISOString();
+        }
+        // If already ISO string
+        return new Date(date).toISOString();
+      }
+      if (date instanceof Date) {
+        return date.toISOString();
+      }
+      return null;
+    }
     function calculateSeries(number: number): number {
       if (number < 1000 || number > 9999) {
         throw new Error('Number must be a 4-digit number.');
@@ -190,14 +213,8 @@ export class GirviService {
 
       for (const row of excelRows) {
         // Convert Excel serial date to string if needed
-        let startDate = row['start date'];
-        if (typeof startDate === 'number') {
-          startDate = excelDateToJSDate(startDate);
-        }
-        let endDate = row['end date'];
-        if (typeof endDate === 'number') {
-          endDate = excelDateToJSDate(endDate);
-        }
+        let startDate = parseDateField(row['start date']);
+        let endDate = parseDateField(row['end date']);
         const girviItem: GirviItem = {
           amtLoan: row['amount_loan'],
           FullDescription: row['item'],
@@ -209,8 +226,8 @@ export class GirviService {
           // userId: userId,
           number: row['itemno'],
           NameAddress: row['name'],
-          date: startDate,
-          endDate: endDate,
+          date: startDate ? new Date(startDate) : null,
+          endDate: endDate ? new Date(endDate) : null,
           GirviItems: [girviItem],
           series: calculateSeries(row['itemno']),
         };

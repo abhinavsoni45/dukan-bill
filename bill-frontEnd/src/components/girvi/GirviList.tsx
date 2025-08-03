@@ -64,6 +64,10 @@ export const GirviList = ({ filter, sort }: any) => {
   if (listType === "serie") {
     girviFilterQuery.number = currentPage;
   }
+  // if (startDate && endDate) {
+  // girviFilterQuery.filter.startDate = startDate;
+  // girviFilterQuery.filter.endDate = endDate;
+  // }
   const { data, loading, error } = useGetGirvis(girviFilterQuery);
 
   const { searchTerm } = useSearch();
@@ -77,9 +81,12 @@ export const GirviList = ({ filter, sort }: any) => {
       );
       const firstDate = sorted[0]?.date || "";
       const lastDate = sorted[sorted.length - 1]?.date || "";
-      setDefaultDates({ start: firstDate, end: lastDate });
+      // Set default dates only if they are not already set
+      if (!startDate && !endDate) {
+        setDefaultDates({ start: firstDate, end: lastDate });
+      }
     }
-  }, [data, setDefaultDates]);
+  }, [data, setDefaultDates, startDate, endDate]);
 
   // Only filter if data is available
   const filteredData =
@@ -111,12 +118,12 @@ export const GirviList = ({ filter, sort }: any) => {
   const handleClose = () => setOpen(false);
 
   // Only render UI when data is available (for serie, also require currentPage)
-  if (
-    (listType === "serie" && (currentPage === null || !data)) ||
-    (listType === "masterData" && !data)
-  ) {
-    return null;
-  }
+  // if (
+  //   (listType === "serie" && (currentPage === null || !data)) ||
+  //   (listType === "masterData" && !data)
+  // ) {
+  //   return null;
+  // }
 
   return (
     <div style={{ height: "92vh" }}>
@@ -143,7 +150,7 @@ export const GirviList = ({ filter, sort }: any) => {
         size="large"
         edge="start"
         onClick={handleOpen}
-        style={{ bottom: "5vh", right: "3vw", position: "absolute" }}
+        style={{ bottom: "5vh", right: "3vw", position: "fixed" }}
       >
         <AddCircle color="primary" />
       </IconButton>

@@ -26,7 +26,7 @@ export class Girvi extends AbstractEntity {
 
   @Field({ nullable: true })
   @Prop()
-  date: string;
+  date: Date;
 
   @Field({ nullable: true })
   @Prop()
@@ -42,7 +42,7 @@ export class Girvi extends AbstractEntity {
 
   @Field({ nullable: true })
   @Prop()
-  endDate?: string;
+  endDate?: Date;
 
   @Field({ nullable: true })
   @Prop()

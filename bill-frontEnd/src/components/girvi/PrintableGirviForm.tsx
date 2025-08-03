@@ -59,7 +59,7 @@ export const PrintableGirviForm = React.forwardRef<
         </div>
 
         <div className="kannada-text">
-          ಕೆಳಗೆ ಸೂಚಿಸಿದ ಸಾಮಾನುಗಳನ್ನು ನನ್ನ ವಶಕ್ಕೆ ಇಟ್ಟಿರಾಹುದು:
+          ಕೆಳಗೆ ಕಾಣಿಸಿದ ಸಾಮಾನುಗಳನ್ನು ನಿಮ್ಮಲ್ಲಿ ಇಟ್ಟಿರುತ್ತೇನೆ
         </div>
 
         <div className="detail-row">
@@ -71,15 +71,17 @@ export const PrintableGirviForm = React.forwardRef<
           >
             {Girvi?.GirviItems[0]?.Value}
           </span>
+          <div className="kannada-text">ತೆಗೆದುಕೊಂಡ ರೂಪಾಯಿಗಳು</div>
           <span style={{ marginLeft: 20, fontSize: "12px" }}>
-            Rate of Interest charged: 14% ಮಧ್ಯೆ ಬಡಿ:
+            Rate of Interest charged: 14% ಬಡ್ಡಿ ಧರ:
           </span>
         </div>
-
-        <div className="kannada-text">ಮೂಲಧನದ ಮೊತ್ತ: ರೂ.</div>
-
         <div className="kannada-text" style={{ marginBottom: 15 }}>
           Time agreed upon for redemption of the articles pledge - 3 ತಿಂಗಳು
+        </div>
+        <div className="kannada-text">ಒಪ್ಪಿಕೊಂಡ ವಾಯಿದಾ ಕರಾರು</div>
+        <div className="kannada-text">
+          (ಸಂಜೆ 8 ಗಂಟೆಯ ಮೇಲೆ ಸಾಮಾನು ಕೊಡಲಾಗುವುದಿಲ್ಲ)
         </div>
       </div>
 
@@ -97,7 +99,7 @@ export const PrintableGirviForm = React.forwardRef<
             <th>No.</th>
             <th>
               Full & Detailed Description of Articles <br />
-              <span className="kannada-text">ವಸ್ತುಗಳ ಸಂಪೂರ್ಣ ವಿವರ</span>
+              <span className="kannada-text">ಸಾಮಾನುಗಳ ವಿವರ</span>
             </th>
             <th>
               Gross <br />
@@ -112,7 +114,7 @@ export const PrintableGirviForm = React.forwardRef<
             </th>
             <th>
               Value <br />
-              <span className="kannada-text">ಬೆಲೆ</span> <br />
+              <span className="kannada-text">ಕಿಮ್ಮತ್ತು</span> <br />
               Rs. <br />
               <span className="kannada-text">ರೂ.</span>
             </th>
@@ -149,7 +151,7 @@ export const PrintableGirviForm = React.forwardRef<
 
       <div className="notice-section">
         <div className="notice-text">
-          ಸೂಚನೆ: ವಾಯಿಕೆಗೆ ಸರಿಯಾಗಿ ಪ್ರತಿ 3 ತಿಂಗಳಿಗೆ ಬಡಿ ಕೊಡಬೇಕು
+          ಸೂಚನೆ: ವಾಯಿದಕ್ಕೆ ಸರಿಯಾಗಿ ಪ್ರತಿ 3 ತಿಂಗಳಿಗೊಮ್ಮೆ ಬಡ್ಡಿ ಕೊಡಬೇಕು
         </div>
         <div className="notice-subtext">
           (ದಿನ 7 ರೊಳಗೆ ಬಡಿ ಸಾರಾಣೊ ಲೆಕ್ಕಿಸುವುದಿಲ್ಲ)
