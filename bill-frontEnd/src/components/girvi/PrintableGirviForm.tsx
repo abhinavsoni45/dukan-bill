@@ -133,7 +133,7 @@ export const PrintableGirviForm = React.forwardRef<
           ))}
 
           {/* Add extra empty rows to make total 10 */}
-          {Array.from({ length: 8 - (Girvi?.GirviItems?.length || 0) }).map(
+          {Array.from({ length: 7 - (Girvi?.GirviItems?.length || 0) }).map(
             (_, i) => (
               <tr className="empty-row" key={`empty-${i}`}>
                 <td>&nbsp;</td>
