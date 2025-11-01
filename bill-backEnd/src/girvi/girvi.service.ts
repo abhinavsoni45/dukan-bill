@@ -14,6 +14,7 @@ import {
 } from 'fs';
 import { GirviItem } from './entities/girviItem.entity';
 import { GirviFilterQuery } from './dto/girvi-query.input';
+import { PaginationOptions } from './dto/pagination-options.input';
 
 @Injectable()
 export class GirviService {
@@ -26,7 +27,10 @@ export class GirviService {
     });
   }
 
-  async findAll(girviFilterQuery?: GirviFilterQuery) {
+  async findAll(
+    girviFilterQuery?: GirviFilterQuery,
+    paginationOptions?: PaginationOptions,
+  ) {
     const filter = {};
     if (girviFilterQuery?.number) {
       filter['series'] = girviFilterQuery.number;
@@ -55,11 +59,20 @@ export class GirviService {
       sort['number'] = 1;
     }
 
-    return this.girviRepository.find(filter, { sort });
+    // Add skip and limit to options if provided
+    const options: any = { sort };
+    if (paginationOptions?.skip !== undefined) options.skip = paginationOptions.skip;
+    if (paginationOptions?.limit !== undefined) options.limit = paginationOptions.limit;
+
+    return this.girviRepository.find(filter, options);
   }
 
   // In your girvi.service.ts
 
+  async getCount() {
+    const girvis = await this.girviRepository.find({});
+    return girvis.length;
+  }
   async findSeriesRange() {
     try {
       const result = await this.girviRepository.aggregate([

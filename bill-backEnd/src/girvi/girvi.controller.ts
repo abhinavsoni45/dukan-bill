@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   UploadedFile,
   UseGuards,
@@ -36,7 +37,18 @@ export class GirviController {
     @CurrentUser() user: TokenPayload,
   ) {
     console.log('Received file in controller:', file);
-    console.log('File buffer:', file.buffer, 'Type of file buffer:', typeof file.buffer);
+    console.log(
+      'File buffer:',
+      file.buffer,
+      'Type of file buffer:',
+      typeof file.buffer,
+    );
     return this.girviService.saveExcelToTemp(file.buffer, user._id);
+  }
+
+  @Get('count')
+  @UseGuards(JwtAuthGuard)
+  async getCount() {
+    return this.girviService.getCount();
   }
 }

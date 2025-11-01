@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
@@ -16,7 +15,6 @@ const Header = () => {
   const authenticated = useReactiveVar(authenticatedVar);
   const { data: seriesData } = useFindRange();
   const smallestSeries = seriesData?.seriesRange?.smallest;
-  const largestSeries = seriesData?.seriesRange?.largest;
 
   const pages: Page[] = [
     {
@@ -26,6 +24,10 @@ const Header = () => {
     {
       title: "Girvi",
       path: smallestSeries ? `/girvi` : "/girvi",
+    },
+    {
+      title: "Inventory",
+      path: "/inventory",
     },
   ];
 

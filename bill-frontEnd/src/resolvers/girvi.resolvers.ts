@@ -1,9 +1,17 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { skipToken, useMutation, useQuery } from "@apollo/client";
 import { GET_GIRVIS, SERIES_RANGE } from "../queries/girvi.queries";
+import { PAGE_SIZE } from "../constants/girvipage-size";
 
-export const useGetGirvis = (girviFilterQuery: any) => {
+export const useGetGirvis = (
+  girviFilterQuery: any,
+  paginationOptions?: { skip?: number; limit?: number }
+) => {
   return useQuery(GET_GIRVIS, {
-    variables: { girviFilterQuery },
+    variables: {
+      girviFilterQuery,
+      paginationOptions,
+      fetchPolicy: "network-only",
+    },
   });
 };
 

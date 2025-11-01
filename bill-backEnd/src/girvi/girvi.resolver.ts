@@ -12,6 +12,7 @@ import { CreateGirviInput } from './dto/create-girvi.input';
 import { GirviFilterQuery } from './dto/girvi-query.input';
 import { number } from 'joi';
 import { SeriesRange } from './entities/seriesRange.type';
+import { PaginationOptions } from './dto/pagination-options.input';
 
 @Resolver(() => Girvi)
 export class GirviResolver {
@@ -30,8 +31,9 @@ export class GirviResolver {
   findAll(
     @Args('girviFilterQuery', { nullable: true })
     girviFilterQuery?: GirviFilterQuery,
-  ) {
-    return this.girviService.findAll(girviFilterQuery);
+    @Args('paginationOptions', { nullable: true }) paginationOptions?: PaginationOptions,
+  ): Promise<Girvi[]> {
+    return this.girviService.findAll(girviFilterQuery, paginationOptions);
   }
 
   // @Query(() => Int, {

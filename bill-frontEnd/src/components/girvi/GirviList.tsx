@@ -1,15 +1,7 @@
-import {
-  Box,
-  Card,
-  IconButton,
-  Modal,
-  Pagination,
-  PaginationItem,
-} from "@mui/material";
+import { IconButton } from "@mui/material";
 import OutlinedCard from "./Card";
-import { Canvas } from "../../elements/UI";
 import { TopBar } from "./TopBar";
-import { Add, AddCircle } from "@mui/icons-material";
+import { AddCircle } from "@mui/icons-material";
 import GirviForm from "./GirviForm";
 import { useState, useEffect } from "react";
 import { useGetGirvis } from "../../hooks/useGetGirvis";
@@ -25,13 +17,6 @@ export const GirviList = ({ filter, sort }: any) => {
     loading: seriesLoading,
     error: seriesError,
   } = useFindRange();
-  console.log(
-    seriesData,
-    "seriesData",
-    seriesLoading,
-    seriesError,
-    "seriesError"
-  );
 
   const [open, setOpen] = useState(false);
 
@@ -68,25 +53,41 @@ export const GirviList = ({ filter, sort }: any) => {
   // girviFilterQuery.filter.startDate = startDate;
   // girviFilterQuery.filter.endDate = endDate;
   // }
-  const { data, loading, error } = useGetGirvis(girviFilterQuery);
+  const { data, loading, error, fetchMore, refetch } = useGetGirvis(
+    girviFilterQuery,
+    {
+      skip: 0,
+      limit: 10,
+    }
+  );
+
+  // Refetch data from network when currentPage changes (for latest data)
+  useEffect(() => {
+    if (listType === "serie" && currentPage !== null) {
+      refetch && refetch({ ...girviFilterQuery });
+    }
+    if (listType === "masterData") {
+      refetch && refetch({ ...girviFilterQuery });
+    }
+  }, [currentPage, listType]);
 
   const { searchTerm } = useSearch();
 
   // Set default dates from girvi data (first and last date)
-  useEffect(() => {
-    if (data && data.girvis && data.girvis.length > 0) {
-      // Sort by date ascending
-      const sorted = [...data.girvis].sort((a, b) =>
-        a.date > b.date ? 1 : -1
-      );
-      const firstDate = sorted[0]?.date || "";
-      const lastDate = sorted[sorted.length - 1]?.date || "";
-      // Set default dates only if they are not already set
-      if (!startDate && !endDate) {
-        setDefaultDates({ start: firstDate, end: lastDate });
-      }
-    }
-  }, [data, setDefaultDates, startDate, endDate]);
+  // useEffect(() => {
+  //   if (data && data.girvis && data.girvis.length > 0) {
+  //     // Sort by date ascending
+  //     const sorted = [...data.girvis].sort((a, b) =>
+  //       a.date > b.date ? 1 : -1
+  //     );
+  //     const firstDate = sorted[0]?.date || "";
+  //     const lastDate = sorted[sorted.length - 1]?.date || "";
+  //     // Set default dates only if they are not already set
+  //     if (!startDate && !endDate) {
+  //       setDefaultDates({ start: firstDate, end: lastDate });
+  //     }
+  //   }
+  // }, [data, setDefaultDates, startDate, endDate]);
 
   // Only filter if data is available
   const filteredData =
@@ -96,24 +97,23 @@ export const GirviList = ({ filter, sort }: any) => {
           girvis: data.girvis.filter((girvi: any) => {
             // Date filter logic
             let inDateRange = true;
-            if (startDate) {
-              inDateRange = inDateRange && girvi.date >= startDate;
-            }
-            if (endDate) {
-              inDateRange = inDateRange && girvi.date <= endDate;
-            }
+            // if (startDate) {
+            //   inDateRange = inDateRange && girvi.date >= startDate;
+            // }
+            // if (endDate) {
+            //   inDateRange = inDateRange && girvi.date <= endDate;
+            // }
             const searchLower = searchTerm.toLowerCase();
             return (
-              inDateRange &&
-              (girvi?.NameAddress?.toLowerCase().includes(searchLower) ||
-                girvi?.number?.toString().includes(searchLower) ||
-                girvi?.phno?.toString().includes(searchLower) ||
-                girvi?.date?.toLowerCase().includes(searchLower))
+              // inDateRange &&
+              girvi?.NameAddress?.toLowerCase().includes(searchLower) ||
+              girvi?.number?.toString().includes(searchLower) ||
+              girvi?.phno?.toString().includes(searchLower) ||
+              girvi?.date?.toLowerCase().includes(searchLower)
             );
           }),
         }
       : { girvis: [] };
-  console.log(loading, error, data, "girvidata", data?.girvis, filteredData);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -136,15 +136,8 @@ export const GirviList = ({ filter, sort }: any) => {
         smallest={smallest}
         totalPages={totalPages}
       />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          marginTop: "4px",
-          gap: "4px",
-        }}
-      >
-        <OutlinedCard girvis={filteredData} />
+      <div>
+        <OutlinedCard girvis={filteredData} fetchMore={fetchMore} />
       </div>
       <IconButton
         size="large"

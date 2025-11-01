@@ -3,6 +3,7 @@ import Login from "./auth/Login";
 import Signup from "./auth/Signup";
 import Home from "./home/Home";
 import { GirviList } from "./girvi/GirviList";
+import Inventory from "./inventory/homepg";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/girvi",
     element: <GirviList />,
+  },
+  {
+    path: "/inventory",
+    element: <Inventory />,
   },
   // {
   //   path: "/upload",

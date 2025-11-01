@@ -26,6 +26,7 @@ import { GirviList } from "./components/girvi/GirviList";
 import { SearchProvider } from "./components/context/SearchContext";
 import { TimeFilterProvider } from "./components/context/TimeFilterContext";
 import Header from "./components/header/Header";
+import Inventory from "./components/inventory/homepg";
 
 const darkTheme = createTheme({
   palette: {
@@ -52,6 +53,7 @@ const App = () => {
   // const { openModal } = useContext(ModalContext);
   const showBillList = path === "/" || path.includes("bills");
   const showGirviList = path === "/girvi" || path.includes("girviru");
+  const showInventory = path === "/inventory";
   // return (
   //   <ApolloProvider client={client}>
   //     <ThemeProvider theme={darkTheme}>
@@ -94,8 +96,6 @@ const App = () => {
                   </Grid>
                   <Grid item md={9}>
                     <InvoiceForm onThemeToggle={handleThemeChange} />
-                    {/* <Modal></Modal> */}
-                    {/* <Routes /> */}
                   </Grid>
                 </Grid>
               ) : showGirviList ? (
@@ -117,18 +117,17 @@ const App = () => {
                     {/* <h1>Hello worlds</h1> */}
                   </Grid>
                 </Grid>
+              ) : showInventory ? (
+                <Grid container>
+                  <Inventory />
+                </Grid>
               ) : (
-                // <div>
-                //   <h1>Hello World</h1>
-                //   {/* You can replace this with any component you want to show on the /girvi path */}
-                // </div>
                 <Routes />
               )}
             </Guard>
           </SearchProvider>
         </TimeFilterProvider>
         <Snackbar />
-        {/* <Modal /> */}
       </ThemeProvider>
     </ApolloProvider>
   );

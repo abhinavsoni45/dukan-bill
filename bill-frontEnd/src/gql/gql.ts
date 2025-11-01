@@ -24,7 +24,7 @@ const documents = {
     "\n  query girvi($_id: String!) {\n    girvi(_id: $_id) {\n      ...GirviFragment\n    }\n  }\n": types.GirviDocument,
     "\n  query Me {\n    me {\n      _id\n      email\n    }\n  }\n": types.MeDocument,
     "\n  mutation UpdateBill($updateBillInput: UpdateBillInput!) {\n    updateBill(updateBillInput: $updateBillInput) {\n      _id\n      number\n      date\n      customerName\n      taxableValue\n      cgst\n      sgst\n      invoiceTotal\n      chequeNo\n      bankName\n      AllItems {\n        hsnCode\n        products\n        grossWt\n        netWt\n        ratePerUnit\n        amountRs\n      }\n    }\n  }\n": types.UpdateBillDocument,
-    "\n  query Girvis($girviFilterQuery: GirviFilterQuery) {\n    girvis(girviFilterQuery: $girviFilterQuery) {\n      _id\n      userId\n      number\n      NameAddress\n      date\n      series\n      endDate\n      GirviItems {\n        amtLoan\n        FullDescription\n        grossWt\n        Value\n      }\n    }\n  }\n": types.GirvisDocument,
+    "\n  query Girvis($girviFilterQuery: GirviFilterQuery, $paginationOptions: PaginationOptions) {\n    girvis(girviFilterQuery: $girviFilterQuery, paginationOptions: $paginationOptions) {\n      _id\n      userId\n      number\n      NameAddress\n      date\n      series\n      endDate\n      GirviItems {\n        amtLoan\n        FullDescription\n        grossWt\n        Value\n      }\n    }\n  }\n": types.GirvisDocument,
     "\n  query seriesRange {\n    seriesRange {\n      smallest\n      largest\n    }\n  }\n": types.SeriesRangeDocument,
 };
 
@@ -89,7 +89,7 @@ export function graphql(source: "\n  mutation UpdateBill($updateBillInput: Updat
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Girvis($girviFilterQuery: GirviFilterQuery) {\n    girvis(girviFilterQuery: $girviFilterQuery) {\n      _id\n      userId\n      number\n      NameAddress\n      date\n      series\n      endDate\n      GirviItems {\n        amtLoan\n        FullDescription\n        grossWt\n        Value\n      }\n    }\n  }\n"): (typeof documents)["\n  query Girvis($girviFilterQuery: GirviFilterQuery) {\n    girvis(girviFilterQuery: $girviFilterQuery) {\n      _id\n      userId\n      number\n      NameAddress\n      date\n      series\n      endDate\n      GirviItems {\n        amtLoan\n        FullDescription\n        grossWt\n        Value\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query Girvis($girviFilterQuery: GirviFilterQuery, $paginationOptions: PaginationOptions) {\n    girvis(girviFilterQuery: $girviFilterQuery, paginationOptions: $paginationOptions) {\n      _id\n      userId\n      number\n      NameAddress\n      date\n      series\n      endDate\n      GirviItems {\n        amtLoan\n        FullDescription\n        grossWt\n        Value\n      }\n    }\n  }\n"): (typeof documents)["\n  query Girvis($girviFilterQuery: GirviFilterQuery, $paginationOptions: PaginationOptions) {\n    girvis(girviFilterQuery: $girviFilterQuery, paginationOptions: $paginationOptions) {\n      _id\n      userId\n      number\n      NameAddress\n      date\n      series\n      endDate\n      GirviItems {\n        amtLoan\n        FullDescription\n        grossWt\n        Value\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

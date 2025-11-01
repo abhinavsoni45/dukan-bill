@@ -11,6 +11,8 @@ import TextField from "@mui/material/TextField";
 import { Print } from "@mui/icons-material";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import InfiniteScroll from "react-infinite-scroller";
+import { useCountGirvis } from "../../hooks/useCountGirvis";
 
 const formatDate = (dateString: string) => {
   if (!dateString) return "";
@@ -55,14 +57,20 @@ const CardBody = ({ girvi, onClick }: { girvi: any; onClick: () => void }) => (
 
 export default function OutlinedCard({
   girvis,
+  fetchMore,
 }: {
   girvis: { girvis: any[] };
+  fetchMore: any;
 }) {
+  const { count, countGirvis } = useCountGirvis();
   const printRef = useRef<HTMLDivElement>(null);
   const girvidate = girvis.girvis;
   const [open, setOpen] = React.useState(false);
   const [selectedGirvi, setSelectedGirvi] = React.useState<any>(null);
 
+  console.log("Card component received girvis:", girvis);
+  console.log("Girvidate (array):", girvidate);
+  console.log("Count:", count);
   const handleOpen = (girvi: any) => {
     setSelectedGirvi(girvi);
     setOpen(true);
@@ -72,6 +80,9 @@ export default function OutlinedCard({
     setSelectedGirvi(null);
   };
 
+  React.useEffect(() => {
+    countGirvis();
+  }, [count]);
   // Form state
   const [form, setForm] = React.useState({
     itemno: "",
@@ -168,116 +179,134 @@ export default function OutlinedCard({
   };
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-        gap: "4px",
-      }}
-    >
-      {girvidate?.map((girvi: any, idx: any) => (
-        <Card
-          key={girvi?._id ?? idx}
-          variant="outlined"
-          style={
-            girvi?.endDate
-              ? { backgroundColor: "lightblue", width: "250px", padding: "2px" }
-              : { backgroundColor: "yellow", width: "250px", padding: "2px" }
-          }
-        >
-          <CardBody girvi={girvi} onClick={() => handleOpen(girvi)} />
-        </Card>
-      ))}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <form>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Girvi
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <TextField
-                label="Item No"
-                name="itemno"
-                value={form.itemno}
-                onChange={handleChange}
-                fullWidth
-              />
-              <TextField
-                label="Date"
-                name="date"
-                // type="date"
-                value={form.date}
-                onChange={handleChange}
-                fullWidth
-                // InputLabelProps={{ shrink: true }}
-              />
-              <TextField
-                label="End Date"
-                name="endDate"
-                // type="date"
-                value={form.endDate}
-                onChange={handleChange}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-              <TextField
-                label="Amount Loan"
-                name="amtLoan"
-                value={form.amtLoan}
-                onChange={handleChange}
-                fullWidth
-              />
-              <TextField
-                label="Name & Address"
-                name="NameAddress"
-                value={form.NameAddress}
-                onChange={handleChange}
-                fullWidth
-              />
-              <TextField
-                label="Number of Days"
-                name="days"
-                value={(() => {
-                  const start = parseDate(form.date);
-                  const end = parseDate(form.endDate);
-                  if (
-                    !start ||
-                    !end ||
-                    isNaN(start.getTime()) ||
-                    isNaN(end.getTime())
-                  )
-                    return "";
-                  const diffTime = end.getTime() - start.getTime();
-                  return Math.max(
-                    Math.ceil(diffTime / (1000 * 60 * 60 * 24)),
-                    0
-                  );
-                })()}
-                InputProps={{ readOnly: true }}
-                fullWidth
-              />
-              <div style={{ display: "flex", gap: "8px" }}>
+    <Box>
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={() =>
+          fetchMore({
+            variables: {
+              paginationOptions: {
+                skip: girvis.girvis.length,
+                limit: 10,
+              },
+            },
+          })
+        }
+        hasMore={girvis && count ? girvis.girvis.length < count : false}
+        useWindow={true}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: "4px",
+        }}
+      >
+        {girvidate?.map((girvi: any, idx: any) => (
+          <Card
+            key={girvi?._id ?? idx}
+            variant="outlined"
+            style={
+              girvi?.endDate
+                ? {
+                    backgroundColor: "lightblue",
+                    width: "250px",
+                    padding: "2px",
+                  }
+                : { backgroundColor: "yellow", width: "250px", padding: "2px" }
+            }
+          >
+            <CardBody girvi={girvi} onClick={() => handleOpen(girvi)} />
+          </Card>
+        ))}
+        <Modal open={open} onClose={handleClose}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <form>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Girvi
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <TextField
-                  label="Interest"
-                  name="interest"
-                  value={getInterest()}
+                  label="Item No"
+                  name="itemno"
+                  value={form.itemno}
+                  onChange={handleChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Date"
+                  name="date"
+                  // type="date"
+                  value={form.date}
+                  onChange={handleChange}
+                  fullWidth
+                  // InputLabelProps={{ shrink: true }}
+                />
+                <TextField
+                  label="End Date"
+                  name="endDate"
+                  // type="date"
+                  value={form.endDate}
+                  onChange={handleChange}
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                />
+                <TextField
+                  label="Amount Loan"
+                  name="amtLoan"
+                  value={form.amtLoan}
+                  onChange={handleChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Name & Address"
+                  name="NameAddress"
+                  value={form.NameAddress}
+                  onChange={handleChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Number of Days"
+                  name="days"
+                  value={(() => {
+                    const start = parseDate(form.date);
+                    const end = parseDate(form.endDate);
+                    if (
+                      !start ||
+                      !end ||
+                      isNaN(start.getTime()) ||
+                      isNaN(end.getTime())
+                    )
+                      return "";
+                    const diffTime = end.getTime() - start.getTime();
+                    return Math.max(
+                      Math.ceil(diffTime / (1000 * 60 * 60 * 24)),
+                      0
+                    );
+                  })()}
                   InputProps={{ readOnly: true }}
                   fullWidth
-                  helperText={`Calculated at ${form.interestRate}% p.a. for number of days between start and end date`}
                 />
-                {/* <TextField
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <TextField
+                    label="Interest"
+                    name="interest"
+                    value={getInterest()}
+                    InputProps={{ readOnly: true }}
+                    fullWidth
+                    helperText={`Calculated at ${form.interestRate}% p.a. for number of days between start and end date`}
+                  />
+                  {/* <TextField
                   label="Interest Rate (%)"
                   name="interestRate"
                   value={form.interestRate}
@@ -286,31 +315,32 @@ export default function OutlinedCard({
                   fullWidth
                   helperText="Annual interest rate (%) (auto from monthly)"
                 /> */}
-                <TextField
-                  label="Monthly Interest per 100"
-                  name="monthlyInterestPer100"
-                  value={form.monthlyInterestPer100}
-                  onChange={handleChange}
-                  type="number"
-                  fullWidth
-                  helperText="e.g. 2 = 24% p.a., 2.5 = 30% p.a."
-                />
-              </div>
-            </Box>
-          </form>
-          <CardActions sx={{ justifyContent: "flex-end" }}>
-            <Print
-              onClick={() => {
-                console.log("printing", form);
-                handlePrint();
-              }}
-            />
-          </CardActions>
-          <div style={{ display: "none" }}>
-            <PrintableGirviForm ref={printRef} Girvi={selectedGirvi} />
-          </div>
-        </Box>
-      </Modal>
+                  <TextField
+                    label="Monthly Interest per 100"
+                    name="monthlyInterestPer100"
+                    value={form.monthlyInterestPer100}
+                    onChange={handleChange}
+                    type="number"
+                    fullWidth
+                    helperText="e.g. 2 = 24% p.a., 2.5 = 30% p.a."
+                  />
+                </div>
+              </Box>
+            </form>
+            <CardActions sx={{ justifyContent: "flex-end" }}>
+              <Print
+                onClick={() => {
+                  console.log("printing", form);
+                  handlePrint();
+                }}
+              />
+            </CardActions>
+            <div style={{ display: "none" }}>
+              <PrintableGirviForm ref={printRef} Girvi={selectedGirvi} />
+            </div>
+          </Box>
+        </Modal>
+      </InfiniteScroll>
     </Box>
   );
 }

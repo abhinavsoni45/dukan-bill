@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_GIRVIS = gql`
-  query Girvis($girviFilterQuery: GirviFilterQuery) {
-    girvis(girviFilterQuery: $girviFilterQuery) {
+  query Girvis($girviFilterQuery: GirviFilterQuery, $paginationOptions: PaginationOptions) {
+    girvis(girviFilterQuery: $girviFilterQuery, paginationOptions: $paginationOptions) {
       _id
       userId
       number

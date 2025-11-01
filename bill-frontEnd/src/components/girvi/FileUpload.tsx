@@ -4,7 +4,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { Button, Typography, IconButton } from "@mui/material";
 
-const FileUpload: React.FC = () => {
+interface FileUploadProps {
+  onUploadSuccess?: () => void;
+}
+
+const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +34,7 @@ const FileUpload: React.FC = () => {
           withCredentials: true,
         });
         alert("File uploaded successfully");
+        if (onUploadSuccess) onUploadSuccess();
       } catch (error) {
         console.error("Error uploading file:", error);
         alert("Error uploading file");
