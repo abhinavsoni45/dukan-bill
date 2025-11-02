@@ -146,8 +146,13 @@ const MRPLabelForm = () => {
 
     // determine page size from preset
     const preset = labelPresets[labelPreset] || labelPresets["custom4_38x0_62"];
-    const pageW = preset.widthIn;
-    const pageH = preset.heightIn;
+    let pageW = preset.widthIn;
+    let pageH = preset.heightIn;
+
+    // Force portrait mode if width is greater than height
+    if (pageW > pageH) {
+      [pageW, pageH] = [pageH, pageW]; // Swap width and height
+    }
 
     // Build print HTML with exact @page size optimized for TSC printers
     const printHtml = `
